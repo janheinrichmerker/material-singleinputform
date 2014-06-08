@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Heinrich Reimer Software
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+	<style name="SingleInputFormStyle">
+		<item name="sifButtonNextIcon">@drawable/ic_action_next_item</item>
+		<item name="sifButtonFinishIcon">@drawable/ic_action_accept</item>
+
+		<item name="sifTextFieldBackgroundColor">@color/default_text_field_background_color</item>
+		<item name="sifProgressBackgroundColor">@color/default_progress_background_color</item>
+
+		<item name="sifTitleTextColor">@color/default_title_text_color</item>
+		<item name="sifDetailsTextColor">@color/default_details_text_color</item>
+		<item name="sifInputTextColor">@color/default_input_text_color</item>
+		<item name="sifErrorTextColor">@color/default_error_text_color</item>
+
+		<item name="sifBetterPickerStyle">@style/BetterPickersDialogFragment.Light</item>
+	</style>
+
+	<style name="SingleInputFormStyle.Holo.Light" parent="SingleInputFormStyle">
+		<item name="sifTextFieldBackgroundColor">#ff007aa3</item>
+		<item name="sifProgressBackgroundColor">#ff005C7a</item>
+		<item name="sifEditTextBackgroundColor">#ff006C8a</item>
+
+		<!-- @android:color/bright_foreground_holo_light -->
+		<item name="sifTitleTextColor">#ff000000</item>
+		<!-- @android:color/bright_foreground_holo_light -->
+		<item name="sifDetailsTextColor">#ff000000</item>
+		<!-- @android:color/bright_foreground_inverse_holo_light -->
+		<item name="sifInputTextColor">#fff3f3f3</item>
+		<!-- @android:color/dim_foreground_holo_light -->
+		<item name="sifErrorTextColor">#ff323232</item>
+
+		<item name="sifBetterPickerStyle">@style/BetterPickersDialogFragment.Light</item>
+	</style>
+
+	<style name="SingleInputFormStyle.Holo.Dark" parent="SingleInputFormStyle">
+		<item name="sifTextFieldBackgroundColor">#ff007aa3</item>
+		<item name="sifProgressBackgroundColor">#ff005C7a</item>
+		<item name="sifEditTextBackgroundColor">#ff006C8a</item>
+
+		<!-- @android:color/bright_foreground_holo_dark -->
+		<item name="sifTitleTextColor">#fff3f3f3</item>
+		<!-- @android:color/bright_foreground_holo_dark -->
+		<item name="sifDetailsTextColor">#fff3f3f3</item>
+		<!-- @android:color/bright_foreground_inverse_holo_dark -->
+		<item name="sifInputTextColor">#ff000000</item>
+		<!-- @android:color/dim_foreground_holo_dark -->
+		<item name="sifErrorTextColor">#ffbebebe</item>
+
+		<item name="sifBetterPickerStyle">@style/BetterPickersDialogFragment</item>
+	</style>
+</resources>

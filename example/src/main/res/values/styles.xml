@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Heinrich Reimer Software
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+	<style name="AppThemeDark" parent="Theme.AppCompat">
+		<item name="sifStyle">@style/SingleInputFormStyle.Holo.Dark</item>
+	</style>
+
+	<style name="AppThemeLight" parent="Theme.AppCompat.Light">
+		<item name="sifStyle">@style/SingleInputFormStyle.Holo.Light</item>
+	</style>
+
+	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="sifStyle">@style/AppTheme.SingleInputFormStyle</item>
+	</style>
+
+	<style name="AppTheme.SingleInputFormStyle" parent="SingleInputFormStyle">
+		<item name="sifButtonNextIcon">@drawable/ic_action_next_item</item>
+		<item name="sifButtonFinishIcon">@drawable/ic_action_accept</item>
+
+		<item name="sifTextFieldBackgroundColor">@color/custom_text_field_background_color</item>
+		<item name="sifProgressBackgroundColor">@color/custom_progress_background_color</item>
+		<item name="sifEditTextBackgroundColor">@color/custom_edit_text_background_color</item>
+
+
+		<item name="sifTitleTextColor">@color/custom_title_text_color</item>
+		<item name="sifDetailsTextColor">@color/custom_details_text_color</item>
+		<item name="sifInputTextColor">@color/custom_input_text_color</item>
+		<item name="sifErrorTextColor">@color/custom_error_text_color</item>
+
+		<item name="sifBetterPickerStyle">@style/AppTheme.BetterPickerTheme</item>
+	</style>
+
+	<style name="AppTheme.BetterPickerTheme" parent="BetterPickersDialogFragment.Light">
+		<item name="bpTitleDividerColor">@color/custom_bp_color</item>
+		<item name="bpKeyboardIndicatorColor">@color/custom_bp_color</item>
+		<item name="bpKeyBackground">@drawable/custom_bp_key_background</item>
+		<item name="bpButtonBackground">@drawable/custom_bp_button_background</item>
+	</style>
+
+</resources>
