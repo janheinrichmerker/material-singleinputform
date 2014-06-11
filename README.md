@@ -14,7 +14,45 @@ Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, 
 Here is a video demonstrating a sample form:
 https://www.youtube.com/watch?v=n6LrI0tL9ZA
 
+Usage
+-----
+### Import
+Add the aar to your projects libraries folder and add this line to your projects ```build.gradle```
+
+	compile "com.heinrichreimersoftware.single_input_form:library:1.0@aar"
+
 PS: I will soon release this project to maven repository.
+
+### Customisation
+You can customise the form's style in your styles.xml:
+
+    <resources>
+        <style name="AppTheme" parent="android:Theme.Holo.Light">
+    		<item name="sifStyle">@style/AppTheme.SingleInputFormStyle</item><!-- reference -->
+        </style>
+        
+    	<style name="AppTheme.SingleInputFormStyle" parent="SingleInputFormStyle">
+    		<item name="sifButtonNextIcon">@drawable/ic_action_next</item><!-- drawable -->
+    		<item name="sifButtonFinishIcon">@drawable/ic_action_finish</item><!-- drawable -->
+    		
+    		<item name="sifTextFieldBackgroundColor">#992044</item><!-- color -->
+    		<item name="sifProgressBackgroundColor">#67132B</item><!-- color -->
+    		<item name="sifEditTextBackgroundColor">#a94054</item><!-- color -->
+    
+    		<item name="sifTitleTextColor">#561529</item><!-- color -->
+    		<item name="sifDetailsTextColor">#561529</item><!-- color -->
+    		<item name="sifInputTextColor">@android:color/white</item><!-- color -->
+    		<item name="sifErrorTextColor">#561529</item>
+    
+            <item name="sifBetterPickerStyle">@style/AppTheme.BetterPickerTheme</item><!-- reference -->
+    	</style>
+    
+    	<style name="AppTheme.BetterPickerTheme" parent="BetterPickersDialogFragment.Light">
+            <!-- See https://github.com/derekbrameyer/android-betterpickers#theming for more information -->
+    		<item name="bpTitleDividerColor">#67132B</item>
+    		<item name="bpKeyboardIndicatorColor">#67132B</item>
+    	</style>
+    </resources>
 
 License
 -------
