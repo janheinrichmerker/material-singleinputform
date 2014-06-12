@@ -19,6 +19,7 @@ package com.heinrichreimersoftware.singleinputform.steps;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -99,6 +100,17 @@ public class OptionStep extends TextStep{
 
 	public OptionStep(Context context, String dataKey, int[] optionsResIds, int titleResId, int errorResId, int detailsResId){
 		this(context, dataKey, optionsResIds, titleResId, errorResId, detailsResId, null);
+	}
+
+	public static int selectedOption(Bundle data, String dataKey){
+		int selectedOption = -1;
+		if(data != null && data.containsKey(dataKey)){
+			Bundle bundleSelectedOption = data.getBundle(dataKey);
+			if(bundleSelectedOption != null){
+				selectedOption = bundleSelectedOption.getInt(DATA_SELECTED_OPTION, -1);
+			}
+		}
+		return selectedOption;
 	}
 
 	private void updateText(){

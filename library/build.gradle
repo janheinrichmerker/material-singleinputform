@@ -5,7 +5,7 @@ android {
 	buildToolsVersion "19.1.0"
 
 	defaultConfig {
-		packageName "com.heinrichreimersoftware.singleinputform"
+		applicationId "com.heinrichreimersoftware.singleinputform.library"
 		minSdkVersion 9
 		targetSdkVersion 19
 		versionCode 1
@@ -27,3 +27,5 @@ dependencies {
 	}
 	compile 'com.nineoldandroids:library:2.4.+'
 }
+
+apply from: '../gradle-mvn-push.gradle'
