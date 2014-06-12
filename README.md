@@ -14,6 +14,14 @@ Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, 
 Here is a video demonstrating a sample form:
 https://www.youtube.com/watch?v=n6LrI0tL9ZA
 
+Screenshots
+-----------
+
+| E-mail input | Password error | Date picker |
+|:-:|:-:|:-:|
+| ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-17.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-50.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-20-34.png) |
+| _[TextStep.java][TS]_ | _[TextStep.java][TS]_ | _[DateStep.java][DS]_ |
+
 Usage
 -----
 ### Import
@@ -75,3 +83,5 @@ License
 [1]: https://github.com/flavienlaurent/singleinputform
 [2]: https://github.com/codrops/MinimalForm
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
+[TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
+[DS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/DateStep.java
