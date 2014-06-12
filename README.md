@@ -20,47 +20,77 @@ Screenshots
 | E-mail input | Password error | Date picker |
 |:-:|:-:|:-:|
 | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-17.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-50.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-20-34.png) |
-| _[TextStep.java][TS]_ | _[TextStep.java][TS]_ | _[DateStep.java][DS]_ |
+| [_TextStep.java_][TS] | [_TextStep.java_][TS] | [_DateStep.java_][DS] |
 
 Usage
 -----
 ### Import
-Add the aar to your projects libraries folder and add this line to your projects ```build.gradle```
+Download [this aar package][AAR] to your projects libraries folder and add this line to your projects ```build.gradle```
 
 	compile "com.heinrichreimersoftware.single_input_form:library:1.0@aar"
 
 PS: I will soon release this project to maven repository.
 
+### Usage
+Just let your _Activity_ extend [_SingleInputFormActivity.java_][SIFA] and implement the abstract methods:
+
+```
+public class MainActivity extends SingleInputFormActivity{
+    private static final String DATA_KEY_EXAMPLE = "example";
+    
+    @Override
+    protected List<Step> getSteps(Context context){
+        List<Step> steps = new ArrayList<Step>();
+        
+        steps.add(
+            new TextStep(context, DATA_KEY_EXAMPLE, InputType.TYPE_CLASS_TEXT, R.string.example, R.string.example_error, R.string.example_details)
+        );
+        
+        ...
+        
+        return steps;
+    }
+    
+    @Override
+    protected void onFormFinished(Bundle data){
+        String text = TextStep.text(data, DATA_KEY_EXAMPLE);
+        ...
+    }
+}
+```
+
 ### Customisation
 You can customise the form's style in your styles.xml:
 
-    <resources>
-        <style name="AppTheme" parent="android:Theme.Holo.Light">
-    		<item name="sifStyle">@style/AppTheme.SingleInputFormStyle</item><!-- reference -->
-        </style>
+```
+<resources>
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <item name="sifStyle">@style/AppTheme.SingleInputFormStyle</item><!-- reference -->
+    </style>
+    
+    <style name="AppTheme.SingleInputFormStyle" parent="SingleInputFormStyle">
+        <item name="sifButtonNextIcon">@drawable/ic_action_next</item><!-- drawable -->
+        <item name="sifButtonFinishIcon">@drawable/ic_action_finish</item><!-- drawable -->
         
-    	<style name="AppTheme.SingleInputFormStyle" parent="SingleInputFormStyle">
-    		<item name="sifButtonNextIcon">@drawable/ic_action_next</item><!-- drawable -->
-    		<item name="sifButtonFinishIcon">@drawable/ic_action_finish</item><!-- drawable -->
-    		
-    		<item name="sifTextFieldBackgroundColor">#992044</item><!-- color -->
-    		<item name="sifProgressBackgroundColor">#67132B</item><!-- color -->
-    		<item name="sifEditTextBackgroundColor">#a94054</item><!-- color -->
+        <item name="sifTextFieldBackgroundColor">#992044</item><!-- color -->
+        <item name="sifProgressBackgroundColor">#67132B</item><!-- color -->
+        <item name="sifEditTextBackgroundColor">#a94054</item><!-- color -->
+        
+        <item name="sifTitleTextColor">#561529</item><!-- color -->
+        <item name="sifDetailsTextColor">#561529</item><!-- color -->
+        <item name="sifInputTextColor">@android:color/white</item><!-- color -->
+        <item name="sifErrorTextColor">#561529</item>
+        
+        <item name="sifBetterPickerStyle">@style/AppTheme.BetterPickerTheme</item><!-- reference -->
+    </style>
     
-    		<item name="sifTitleTextColor">#561529</item><!-- color -->
-    		<item name="sifDetailsTextColor">#561529</item><!-- color -->
-    		<item name="sifInputTextColor">@android:color/white</item><!-- color -->
-    		<item name="sifErrorTextColor">#561529</item>
-    
-            <item name="sifBetterPickerStyle">@style/AppTheme.BetterPickerTheme</item><!-- reference -->
-    	</style>
-    
-    	<style name="AppTheme.BetterPickerTheme" parent="BetterPickersDialogFragment.Light">
-            <!-- See https://github.com/derekbrameyer/android-betterpickers#theming for more information -->
-    		<item name="bpTitleDividerColor">#67132B</item>
-    		<item name="bpKeyboardIndicatorColor">#67132B</item>
-    	</style>
-    </resources>
+    <style name="AppTheme.BetterPickerTheme" parent="BetterPickersDialogFragment.Light">
+        <!-- See https://github.com/derekbrameyer/android-betterpickers#theming for more information -->
+        <item name="bpTitleDividerColor">#67132B</item>
+        <item name="bpKeyboardIndicatorColor">#67132B</item>
+    </style>
+</resources>
+```
 
 License
 -------
@@ -85,3 +115,5 @@ License
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
 [TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
 [DS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/DateStep.java
+[AAR]: http://heinrichreimersoftware.com/files/android/libraries/Android-SingleInputForm/1.0/library-1.0.aar
+[SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
