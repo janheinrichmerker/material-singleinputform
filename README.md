@@ -24,12 +24,10 @@ Screenshots
 
 Usage
 -----
-### Import
-Download [this aar package][AAR] to your projects libraries folder and add this line to your projects ```build.gradle```
+### Gradle
+If you are using Gradle just add maven central repository and add this line to your projects ```build.gradle```
 
-	compile "com.heinrichreimersoftware.single_input_form:library:1.0@aar"
-
-PS: I will soon release this project to maven repository.
+	compile 'com.heinrichreimersoftware.singleinputform:library:1.0'
 
 ### Usage
 Just let your _Activity_ extend [_SingleInputFormActivity.java_][SIFA] and implement the abstract methods:
