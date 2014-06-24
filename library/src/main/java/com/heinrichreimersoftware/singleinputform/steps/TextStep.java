@@ -71,6 +71,35 @@ public class TextStep extends Step{
 		}, null);
 	}
 
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
+		super(context, dataKey, title, error, details);
+		mInputType = inputType;
+		mChecker = checker;
+		getView().setOnEditorActionListener(l);
+	}
+
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, TextView.OnEditorActionListener l){
+		this(context, dataKey, inputType, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(String input){
+				return true;
+			}
+		}, l);
+	}
+
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker){
+		this(context, dataKey, inputType, title, error, details, checker, null);
+	}
+
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details){
+		this(context, dataKey, inputType, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(String input){
+				return true;
+			}
+		}, null);
+	}
+
 	public static String text(Bundle data, String dataKey){
 		String text = null;
 		if(data != null && data.containsKey(dataKey)){

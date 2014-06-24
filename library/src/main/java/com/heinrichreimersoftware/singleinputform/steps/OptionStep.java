@@ -87,8 +87,80 @@ public class OptionStep extends TextStep{
 			@Override
 			public void onClick(View v){
 				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setItems(mOptions, new DialogInterface.OnClickListener() {
+				builder.setTitle(titleResId)
+						.setItems(mOptions, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						mSelectedItemPos = which;
+						updateText();
+					}
+				})
+						.show();
+			}
+		});
+	}
+
+	public OptionStep(Context context, String dataKey, int[] optionsResIds, int titleResId, int errorResId, int detailsResId){
+		this(context, dataKey, optionsResIds, titleResId, errorResId, detailsResId, null);
+	}
+
+	public OptionStep(final Context context, String dataKey, final String[] options, final String title, String error, String details, TextView.OnEditorActionListener l){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(String input){
+				return !TextUtils.isEmpty(input);
+			}
+		}, l);
+
+		mOptions = options;
+
+		setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle(title)
+						.setItems(mOptions, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
+								mSelectedItemPos = which;
+								updateText();
+							}
+						});
+				builder.show();
+			}
+		});
+	}
+
+	public OptionStep(Context context, String dataKey, String[] options, String title, String error, String details){
+		this(context, dataKey, options, title, error, details, null);
+	}
+
+	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final String title, String error, String details, TextView.OnEditorActionListener l){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(String input){
+				return !TextUtils.isEmpty(input);
+			}
+		}, l);
+
+		String[] options = new String[optionsResIds.length];
+		for(int i = 0; i < optionsResIds.length; i++){
+			String option = context.getString(optionsResIds[i]);
+			if(option != null){
+				options[i] = option;
+			}
+			else{
+				options[i] = "";
+			}
+		}
+
+		mOptions = options;
+
+		setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				AlertDialog.Builder builder = new AlertDialog.Builder(context);
+				builder.setTitle(title)
+						.setItems(mOptions, new DialogInterface.OnClickListener(){
+							public void onClick(DialogInterface dialog, int which){
 								mSelectedItemPos = which;
 								updateText();
 							}
@@ -98,8 +170,8 @@ public class OptionStep extends TextStep{
 		});
 	}
 
-	public OptionStep(Context context, String dataKey, int[] optionsResIds, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, optionsResIds, titleResId, errorResId, detailsResId, null);
+	public OptionStep(Context context, String dataKey, int[] optionsResIds, String title, String error, String details){
+		this(context, dataKey, optionsResIds, title, error, details, null);
 	}
 
 	public static int selectedOption(Bundle data, String dataKey){

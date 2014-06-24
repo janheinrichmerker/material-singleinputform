@@ -26,9 +26,14 @@ public abstract class Step{
 	private String mDataKey;
 	private View mInputView;
 	private Bundle mData = new Bundle();
+
 	private int mTitleResId;
 	private int mErrorResId;
 	private int mDetailsResId;
+
+	private String mTitle;
+	private String mError;
+	private String mDetails;
 
 	public Step(Context context, String dataKey, int titleResId, int errorResId, int detailsResId){
 		mContext = context;
@@ -36,6 +41,15 @@ public abstract class Step{
 		mTitleResId = titleResId;
 		mErrorResId = errorResId;
 		mDetailsResId = detailsResId;
+		mInputView = onCreateView();
+	}
+
+	public Step(Context context, String dataKey, String title, String error, String details){
+		mContext = context;
+		mDataKey = dataKey;
+		mTitle = title;
+		mError = error;
+		mDetails = details;
 		mInputView = onCreateView();
 	}
 
@@ -48,16 +62,40 @@ public abstract class Step{
 
 	public abstract View onCreateView();
 
+	@Deprecated
 	public int getTitleResId(){
 		return mTitleResId;
 	}
 
+	public String getTitle(){
+		if(mTitle != null && !mTitle.equals("")){
+			return mTitle;
+		}
+		return getContext().getString(mTitleResId);
+	}
+
+	@Deprecated
 	public int getErrorResId(){
 		return mErrorResId;
 	}
 
+	public String getError(){
+		if(mError != null && !mError.equals("")){
+			return mError;
+		}
+		return getContext().getString(mErrorResId);
+	}
+
+	@Deprecated
 	public int getDetailsResId(){
 		return mDetailsResId;
+	}
+
+	public String getDetails(){
+		if(mDetails != null && !mDetails.equals("")){
+			return mDetails;
+		}
+		return getContext().getString(mDetailsResId);
 	}
 
 	public abstract void updateView(boolean lastStep);

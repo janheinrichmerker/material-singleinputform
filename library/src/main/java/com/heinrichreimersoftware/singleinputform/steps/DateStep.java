@@ -102,6 +102,77 @@ public class DateStep extends TextStep{
 		}, null);
 	}
 
+	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new TextStep.StepChecker(){
+			@Override
+			public boolean check(String input){
+				return !TextUtils.isEmpty(input);
+			}
+		}, l);
+
+		mChecker = checker;
+
+		if(context instanceof FragmentActivity){}
+		else{
+			throw new ClassCastException("context has to implement FragmentActivity");
+		}
+
+		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
+
+		loadTheme();
+
+		setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				DatePickerBuilder datePickerBuilder = new DatePickerBuilder();
+				datePickerBuilder
+						.setFragmentManager(fragmentManager)
+						.setStyleResId(mDatePickerStyleResId)
+						.addDatePickerDialogHandler(new DatePickerDialogFragment.DatePickerDialogHandler(){
+							@Override
+							public void onDialogDateSet(int reference, int year, int monthOfYear, int dayOfMonth){
+								mYear = year;
+								mMonth = monthOfYear;
+								mDay = dayOfMonth;
+								updateText();
+							}
+						});
+				if(mYear >= 0){
+					datePickerBuilder.setYear(mYear);
+				}
+				if(mMonth >= 0){
+					datePickerBuilder.setMonthOfYear(mMonth);
+				}
+				if(mDay >= 0){
+					datePickerBuilder.setDayOfMonth(mDay);
+				}
+				datePickerBuilder.show();
+			}
+		});
+	}
+
+	public DateStep(Context context, String dataKey, String title, String error, String details, TextView.OnEditorActionListener l){
+		this(context, dataKey, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(int year, int month, int day){
+				return true;
+			}
+		}, l);
+	}
+
+	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker){
+		this(context, dataKey, title, error, details, checker, null);
+	}
+
+	public DateStep(Context context, String dataKey, String title, String error, String details){
+		this(context, dataKey, title, error, details, new StepChecker(){
+			@Override
+			public boolean check(int year, int month, int day){
+				return true;
+			}
+		}, null);
+	}
+
 	public static int year(Bundle data, String dataKey){
 		int year = Integer.MIN_VALUE;
 		if(data != null && data.containsKey(dataKey)){

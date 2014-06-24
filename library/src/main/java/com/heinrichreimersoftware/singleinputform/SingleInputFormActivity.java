@@ -340,8 +340,8 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 
 		mInputSwitcher.setDisplayedChild(mStepIndex);
 		mErrorSwitcher.setText("");
-		mDetailsSwitcher.setText(getString(step.getDetailsResId()));
-		mTitleSwitcher.setText(getString(step.getTitleResId()));
+		mDetailsSwitcher.setText(step.getDetails());
+		mTitleSwitcher.setText(step.getTitle());
 		mStepText.setText(getString(R.string.page_number, mStepIndex + 1, stepsSize()));
 
 		((TextView)findViewById(R.id.step_text)).setTextColor(mDetailsTextColor);
@@ -380,7 +380,7 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 		if(!checkStep){
 			if(!mErrored){
 				mErrored = true;
-				mErrorSwitcher.setText(getString(step.getErrorResId()));
+				mErrorSwitcher.setText(step.getError());
 			}
 		}
 		else{
