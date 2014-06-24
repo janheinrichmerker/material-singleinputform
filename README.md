@@ -12,7 +12,7 @@ Implement any form with only one EditText. The idea here is to pack a multiple i
 Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, error message. It's very basic but simple to use.
 
 Here is a video demonstrating a sample form:
-https://www.youtube.com/watch?v=n6LrI0tL9ZA
+http://youtu.be/A99g6NDvn_w
 
 Screenshots
 -----------
