@@ -19,7 +19,7 @@ Screenshots
 
 | E-mail input | Password error | Date picker |
 |:-:|:-:|:-:|
-| ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-17.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-19-50.png) | ![Date picker](https://heinrich.vega.uberspace.de/files/screenshots/2014-06-12-21-20-34.png) |
+| ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-19-17.png) | ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-19-50.png) | ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-20-34.png) |
 | [_TextStep.java_][TS] | [_TextStep.java_][TS] | [_DateStep.java_][DS] |
 
 Usage
@@ -113,5 +113,4 @@ License
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
 [TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
 [DS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/DateStep.java
-[AAR]: http://heinrichreimersoftware.com/files/android/libraries/Android-SingleInputForm/1.0/library-1.0.aar
 [SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
