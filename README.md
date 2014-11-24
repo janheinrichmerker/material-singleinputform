@@ -1,5 +1,6 @@
 Android-SingleInputForm
 =======================
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--SingleInputForm-blue.svg?style=flat)](https://android-arsenal.com/details/1/1163)
 
 A single EditText instead of a classical form.
 
