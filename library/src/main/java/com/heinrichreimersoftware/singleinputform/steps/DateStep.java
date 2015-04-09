@@ -1,10 +1,6 @@
 package com.heinrichreimersoftware.singleinputform.steps;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -13,9 +9,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.doomonafireball.betterpickers.datepicker.DatePickerBuilder;
-import com.doomonafireball.betterpickers.datepicker.DatePickerDialogFragment;
+import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.heinrichreimersoftware.singleinputform.R;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class DateStep extends TextStep{
 
@@ -28,8 +26,6 @@ public class DateStep extends TextStep{
 	private int mDay;
 
 	private StepChecker mChecker;
-
-	private int mDatePickerStyleResId;
 
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new TextStep.StepChecker(){
@@ -48,34 +44,31 @@ public class DateStep extends TextStep{
 
 		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
 
-		loadTheme();
-
 		setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				DatePickerBuilder datePickerBuilder = new DatePickerBuilder();
-				datePickerBuilder
-						.setFragmentManager(fragmentManager)
-						.setStyleResId(mDatePickerStyleResId)
-						.addDatePickerDialogHandler(new DatePickerDialogFragment.DatePickerDialogHandler(){
-							@Override
-							public void onDialogDateSet(int reference, int year, int monthOfYear, int dayOfMonth){
-								mYear = year;
-								mMonth = monthOfYear;
-								mDay = dayOfMonth;
-								updateText();
-							}
-						});
-				if(mYear >= 0){
-					datePickerBuilder.setYear(mYear);
-				}
-				if(mMonth >= 0){
-					datePickerBuilder.setMonthOfYear(mMonth);
-				}
-				if(mDay >= 0){
-					datePickerBuilder.setDayOfMonth(mDay);
-				}
-				datePickerBuilder.show();
+
+                Calendar initial = new GregorianCalendar();
+
+                if(mYear >= 0){
+                    initial.set(Calendar.YEAR, mYear);
+                }
+                if(mMonth >= 0){
+                    initial.set(Calendar.MONTH, mMonth);
+                }
+                if(mDay >= 0){
+                    initial.set(Calendar.DAY_OF_MONTH, mDay);
+                }
+
+				DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
+                        mYear = year;
+                        mMonth = monthOfYear;
+                        mDay = dayOfMonth;
+                        updateText();
+                    }
+                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
 			}
 		});
 	}
@@ -119,34 +112,31 @@ public class DateStep extends TextStep{
 
 		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
 
-		loadTheme();
-
 		setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				DatePickerBuilder datePickerBuilder = new DatePickerBuilder();
-				datePickerBuilder
-						.setFragmentManager(fragmentManager)
-						.setStyleResId(mDatePickerStyleResId)
-						.addDatePickerDialogHandler(new DatePickerDialogFragment.DatePickerDialogHandler(){
-							@Override
-							public void onDialogDateSet(int reference, int year, int monthOfYear, int dayOfMonth){
-								mYear = year;
-								mMonth = monthOfYear;
-								mDay = dayOfMonth;
-								updateText();
-							}
-						});
-				if(mYear >= 0){
-					datePickerBuilder.setYear(mYear);
-				}
-				if(mMonth >= 0){
-					datePickerBuilder.setMonthOfYear(mMonth);
-				}
-				if(mDay >= 0){
-					datePickerBuilder.setDayOfMonth(mDay);
-				}
-				datePickerBuilder.show();
+
+                Calendar initial = new GregorianCalendar();
+
+                if(mYear >= 0){
+                    initial.set(Calendar.YEAR, mYear);
+                }
+                if(mMonth >= 0){
+                    initial.set(Calendar.MONTH, mMonth);
+                }
+                if(mDay >= 0){
+                    initial.set(Calendar.DAY_OF_MONTH, mDay);
+                }
+
+                DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
+                        mYear = year;
+                        mMonth = monthOfYear;
+                        mDay = dayOfMonth;
+                        updateText();
+                    }
+                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
 			}
 		});
 	}
@@ -234,41 +224,7 @@ public class DateStep extends TextStep{
 		updateText();
 	}
 
-	private void loadTheme(){
-		/* Default values */
-		mDatePickerStyleResId = R.style.BetterPickersDialogFragment_Light;
-
-		int themeResId = 0;
-		try{
-			String packageName = getClass().getPackage().getName();
-			PackageManager packageManager = getContext().getPackageManager();
-			if(packageManager != null){
-				PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-
-				ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-				if(applicationInfo != null){
-					themeResId = applicationInfo.theme;
-				}
-			}
-		} catch(PackageManager.NameNotFoundException e){
-			e.printStackTrace();
-		}
-
-
-		/* Custom values */
-		int[] attrs = {R.attr.sifStyle};
-		TypedArray array = getContext().obtainStyledAttributes(themeResId, attrs);
-
-		if(array != null){
-			TypedArray styleArray = getContext().obtainStyledAttributes(array.getResourceId(0, 0), R.styleable.SingleInputFormStyle);
-
-			if(styleArray != null){
-				mDatePickerStyleResId = styleArray.getResourceId(R.styleable.SingleInputFormStyle_sifBetterPickerStyle, mDatePickerStyleResId);
-			}
-		}
-	}
-
-	public static interface StepChecker{
+	public interface StepChecker{
 		boolean check(int year, int month, int day);
 	}
 }

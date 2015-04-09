@@ -16,17 +16,29 @@
   -->
 
 <resources>
-    <string name="app_name">Android-SingleInputForm-Example</string>
+    <string name="app_name">material-singleinputform Demo</string>
 
-	<string name="email">E-mail</string>
-	<string name="email_error">Empty or not well-formed</string>
-	<string name="email_details">Your e-mail will be used as your login. Type the one you use most often.</string>
+    <string name="eula">Accept</string>
+    <string name="eula_title">EULA</string>
+    <string name="eula_error">You must accept the EULA</string>
+    <string name="eula_details">Please accept our end-user license agreement.\n(Just a dummy)</string>
+
+    <string name="email">E-mail</string>
+    <string name="email_error">Empty or not well-formed</string>
+    <string name="email_details">Your e-mail will be used as your login. Type the one you use most often.</string>
+
 	<string name="password">Password</string>
 	<string name="password_error">Empty or not 5-chars long</string>
 	<string name="password_details">Type your own password (5-chars long). Your personal information is protected with this password.</string>
-	<string name="birthday">Birthday</string>
-	<string name="birthday_error">Enter valid birthday after 2000.</string>
-	<string name="birthday_details">We will use your birthday (after 2000) only to calculate your age.</string>
+
+    <string name="birthday">Birthday</string>
+    <string name="birthday_error">You must be at least 14.</string>
+    <string name="birthday_details">We will use your birthday only to calculate your age (older than 14).</string>
+
+    <string name="height">Body height</string>
+    <string name="height_error">You must be at least 160cm tall.</string>
+    <string name="height_details">Just another fake input (taller than 160cm).</string>
+
 	<string name="city">City</string>
 	<string name="city_error">Enter a city.</string>
 	<string name="city_details">We need this information to find you if you mess with us.</string>

@@ -17,12 +17,7 @@
 package com.heinrichreimersoftware.singleinputform.steps;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -40,7 +35,6 @@ public class TextStep extends Step{
 	private StepChecker mChecker;
 
 	private int mEditTextColor;
-	private int mEditTextBackgroundColor;
 
 	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, titleResId, errorResId, detailsResId);
@@ -114,12 +108,10 @@ public class TextStep extends Step{
 	@Override
 	public View onCreateView(){
 		loadTheme();
+
 		EditText editText = (EditText) View.inflate(getContext(), R.layout.view_input, null);
 		editText.setTextColor(mEditTextColor);
-		Drawable background = editText.getBackground();
-		if(background != null){
-			background.setColorFilter(mEditTextBackgroundColor, PorterDuff.Mode.SRC_IN);
-		}
+
 		return editText;
 	}
 
@@ -211,42 +203,16 @@ public class TextStep extends Step{
 	}
 
 	private void loadTheme(){
-		/* Default values */
-		mEditTextColor = getContext().getResources().getColor(R.color.default_input_text_color);
-		mEditTextBackgroundColor = getContext().getResources().getColor(R.color.default_edit_text_background_color);
-
-		int themeResId = 0;
-		try{
-			String packageName = getClass().getPackage().getName();
-			PackageManager packageManager = getContext().getPackageManager();
-			if(packageManager != null){
-				PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-
-				ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-				if(applicationInfo != null){
-					themeResId = applicationInfo.theme;
-				}
-			}
-		} catch(PackageManager.NameNotFoundException e){
-			e.printStackTrace();
-		}
-
-
 		/* Custom values */
-		int[] attrs = {R.attr.sifStyle};
-		TypedArray array = getContext().obtainStyledAttributes(themeResId, attrs);
+        int[] attrs = {android.R.attr.textColorPrimaryInverse};
+        TypedArray array = getContext().obtainStyledAttributes(attrs);
 
-		if(array != null){
-			TypedArray styleArray = getContext().obtainStyledAttributes(array.getResourceId(0, 0), R.styleable.SingleInputFormStyle);
+        mEditTextColor = array.getColor(0, 0);
 
-			if(styleArray != null){
-				mEditTextColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifInputTextColor, mEditTextColor);
-				mEditTextBackgroundColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifEditTextBackgroundColor, mEditTextBackgroundColor);
-			}
-		}
+        array.recycle();
 	}
 
-	public static interface StepChecker{
+	public interface StepChecker{
 		boolean check(String input);
 	}
 }

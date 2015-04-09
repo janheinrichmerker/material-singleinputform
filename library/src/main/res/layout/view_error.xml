@@ -20,7 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 	android:gravity="start"
-    android:fontFamily="sans-serif-thin"
-    android:textSize="18sp"
     android:singleLine="true"
-    />
+    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+    android:textStyle="italic"
+    android:textColor="?android:attr/textColorPrimary"/>

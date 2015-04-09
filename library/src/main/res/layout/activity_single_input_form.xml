@@ -16,12 +16,10 @@
   -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:id="@+id/container_scroll_view"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:paddingBottom="@dimen/activity_vertical_margin"
-	android:paddingLeft="@dimen/activity_horizontal_margin"
-	android:paddingRight="@dimen/activity_horizontal_margin"
 	android:clipToPadding="false"
 	android:scrollbarStyle="outsideOverlay">
 
@@ -35,74 +33,85 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical">
+        <android.support.v7.widget.CardView
+            android:id="@+id/text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/keyline_card"
+            android:background="?attr/colorPrimary"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="@dimen/setup_textfield_corner_radius"
+            app:cardElevation="@dimen/elevation_card">
 
-			<FrameLayout
-				android:id="@+id/text_field"
-				android:background="@drawable/text_field_background_single_input_form"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                android:orientation="vertical">
 
-				<ViewAnimator
-					android:id="@+id/input_switcher"
-					android:layout_width="match_parent"
-					android:layout_height="match_parent"
-					android:layout_gravity="bottom"
-					android:layout_marginBottom="@dimen/setup_progressbar_height"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
 
-				<ImageButton
-					android:id="@+id/next_button"
-					android:layout_gravity="center_vertical|right"
-					android:layout_width="@dimen/button_size"
-					android:layout_height="@dimen/button_size"
-					android:layout_marginBottom="@dimen/setup_progressbar_height"
-					android:gravity="center"
-					android:src="@drawable/ic_action_next_item"
-					android:background="@android:color/transparent"
-					android:adjustViewBounds="false"
-					android:contentDescription="@string/next_step"/>
+                    <ViewAnimator
+                        android:id="@+id/input_switcher"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="bottom"/>
 
-				<ProgressBar
-					android:id="@+id/progressbar"
-					style="?android:attr/progressBarStyleHorizontal"
-					android:progressDrawable="@drawable/progress_single_input_form"
-					android:layout_width="match_parent"
-					android:layout_height="@dimen/setup_progressbar_height"
-					android:layout_gravity="bottom"/>
-			</FrameLayout>
+                    <ImageButton
+                        android:id="@+id/next_button"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/icon_margin"
+                        android:gravity="center"
+                        android:src="@drawable/ic_action_next_item"
+                        android:background="@drawable/selector"
+                        android:contentDescription="@string/next_step"/>
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal"
-				android:layout_marginTop="@dimen/text_field_margin_small"
-				android:layout_marginBottom="@dimen/text_field_margin_big">
+                </LinearLayout>
 
-				<TextSwitcher
-					android:id="@+id/error_switcher"
-					android:layout_width="0dp"
-					android:layout_weight="1"
-					android:layout_height="wrap_content"/>
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/progress_single_input_form"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setup_progressbar_height"
+                    android:layout_gravity="bottom"/>
 
-				<TextView
-					android:id="@+id/step_text"
-					android:layout_width="wrap_content"
-					android:gravity="right"
-					android:layout_height="wrap_content"
-					android:fontFamily="sans-serif-thin"
-					android:textSize="18sp" />
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/keyline">
+
+            <TextSwitcher
+                android:id="@+id/error_switcher"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/step_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
 
-			</LinearLayout>
-		</LinearLayout>
+        </LinearLayout>
 
 		<TextSwitcher
 			android:id="@+id/details_switcher"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content" />
+			android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/keyline"
+            android:paddingRight="@dimen/keyline"/>
 
 	</LinearLayout>
 </ScrollView>

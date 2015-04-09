@@ -16,15 +16,26 @@
   -->
 
 <resources>
+    <color name="material_light_green_500">#8BC34A</color>
+    <color name="material_light_green_700">#689F38</color>
+    <color name="material_amber_a200">#FFD740</color>
+
+    <color name="material_indigo_500">#3F51B5</color>
+    <color name="material_indigo_700">#303F9F</color>
+    <color name="material_deep_purple_a200">#7C4DFF</color>
+
+    <color name="material_bordeaux_500">#992044</color>
+    <color name="material_bordeaux_700">#67132B</color>
+    <color name="material_bordeaux_800">#561529</color>
+    <color name="material_orange_a200">#FFAB40</color>
+
+
+
 	<color name="custom_text_field_background_color">#992044</color>
 	<color name="custom_progress_background_color">#67132B</color>
-	<color name="custom_edit_text_background_color">#a94054</color>
 
 	<color name="custom_title_text_color">#561529</color>
 	<color name="custom_details_text_color">#561529</color>
 	<color name="custom_input_text_color">@android:color/white</color>
 	<color name="custom_error_text_color">#561529</color>
-
-	<color name="custom_bp_color">#67132B</color>
-	<color name="custom_bp_click_overlay">#2000</color>
 </resources>

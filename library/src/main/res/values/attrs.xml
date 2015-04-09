@@ -16,26 +16,6 @@
   -->
 
 <resources>
-	<attr name="sifStyle" format="reference"/>
-
-	<declare-styleable name="SingleInputFormStyle">
-		<attr name="sifButtonNextIcon" format="reference"/>
-		<attr name="sifButtonFinishIcon" format="reference"/>
-
-		<attr name="sifTextFieldBackgroundColor" format="color"/>
-		<attr name="sifProgressBackgroundColor" format="color"/>
-		<attr name="sifEditTextBackgroundColor" format="color"/>
-
-		<attr name="sifTitleTextColor" format="color"/>
-		<attr name="sifDetailsTextColor" format="color"/>
-		<attr name="sifInputTextColor" format="color"/>
-		<attr name="sifErrorTextColor" format="color"/>
-
-		<attr name="sifBetterPickerStyle" format="reference"/>
-
-		<!--
-		Add option to customize corner radius
-		<attr name="sifTextFieldCornerRadius" format="dimension"/>
-		-->
-	</declare-styleable>
+    <attr name="sifNextIcon" format="reference"/>
+    <attr name="sifFinishIcon" format="reference"/>
 </resources>

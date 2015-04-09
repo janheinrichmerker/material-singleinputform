@@ -17,18 +17,20 @@
 package com.heinrichreimersoftware.singleinputform;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -44,7 +46,7 @@ import com.nineoldandroids.util.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SingleInputFormActivity extends FragmentActivity{
+public abstract class SingleInputFormActivity extends ActionBarActivity {
 
 	private static final String KEY_DATA = "key_data";
 	private static final String KEY_STEP_INDEX = "key_step_index";
@@ -73,7 +75,7 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 	private TextSwitcher mTitleSwitcher;
 	private TextSwitcher mErrorSwitcher;
 	private TextSwitcher mDetailsSwitcher;
-	private FrameLayout mTextField;
+	private CardView mTextField;
 	private ViewAnimator mInputSwitcher;
 	private ImageButton mNextButton;
 	private ProgressBar mProgressbar;
@@ -89,12 +91,12 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 	private Drawable mButtonNextIcon;
 	private Drawable mButtonFinishIcon;
 
-	private int mTextFieldBackgroundColor;
-	private int mProgressBackgroundColor;
+	private int mTextFieldBackgroundColor = -1;
+	private int mProgressBackgroundColor = -1;
 
-	private int mTitleTextColor;
-	private int mDetailsTextColor;
-	private int mErrorTextColor;
+	private int mTitleTextColor = -1;
+	private int mDetailsTextColor = -1;
+	private int mErrorTextColor = -1;
 
 	@Override
 	public void onBackPressed(){
@@ -150,6 +152,12 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 		outState.putInt(KEY_STEP_INDEX, mStepIndex);
 	}
 
+	@Override
+	protected void onPause() {
+		hideSoftInput();
+		super.onPause();
+	}
+
 	protected abstract List<Step> getSteps(Context context);
 
 	private void findViews(){
@@ -157,7 +165,7 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 		mTitleSwitcher = (TextSwitcher) findViewById(R.id.title_switcher);
 		mErrorSwitcher = (TextSwitcher) findViewById(R.id.error_switcher);
 		mDetailsSwitcher = (TextSwitcher) findViewById(R.id.details_switcher);
-		mTextField = (FrameLayout) findViewById(R.id.text_field);
+        mTextField = (CardView) findViewById(R.id.text_field);
 		mInputSwitcher = (ViewAnimator) findViewById(R.id.input_switcher);
 		mNextButton = (ImageButton) findViewById(R.id.next_button);
 		mProgressbar = (ProgressBar) findViewById(R.id.progressbar);
@@ -179,60 +187,48 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 		mButtonNextIcon = getResources().getDrawable(R.drawable.ic_action_next_item);
 		mButtonFinishIcon = getResources().getDrawable(R.drawable.ic_action_accept);
 
-		mTextFieldBackgroundColor = getResources().getColor(R.color.default_text_field_background_color);
-		mProgressBackgroundColor = getResources().getColor(R.color.default_progress_background_color);
-
-		mTitleTextColor = getResources().getColor(R.color.default_title_text_color);
-		mDetailsTextColor = getResources().getColor(R.color.default_details_text_color);
-		mErrorTextColor = getResources().getColor(R.color.default_error_text_color);
-
-		int themeResId = 0;
-		try{
-			String packageName = getClass().getPackage().getName();
-			PackageManager packageManager = getPackageManager();
-			if(packageManager != null){
-				PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-
-				ApplicationInfo applicationInfo = packageInfo.applicationInfo;
-				if(applicationInfo != null){
-					themeResId = applicationInfo.theme;
-				}
-			}
-		} catch(PackageManager.NameNotFoundException e){
-			e.printStackTrace();
-		}
-
 
 		/* Custom values */
-		int[] attrs = {R.attr.sifStyle};
-		TypedArray array = obtainStyledAttributes(themeResId, attrs);
+		int[] attrs = {R.attr.colorPrimary, R.attr.colorPrimaryDark, android.R.attr.textColorPrimary, android.R.attr.textColorSecondary, R.attr.sifNextIcon, R.attr.sifFinishIcon};
+		TypedArray array = obtainStyledAttributes(attrs);
 
-		if(array != null){
-			TypedArray styleArray = obtainStyledAttributes(array.getResourceId(0, 0), R.styleable.SingleInputFormStyle);
+        mTextFieldBackgroundColor = array.getColor(0, 0);
+        mProgressBackgroundColor = array.getColor(1, 0);
+        mTitleTextColor = mErrorTextColor = array.getColor(2, 0);
+        mDetailsTextColor = array.getColor(3, 0);
 
-			if(styleArray != null){
-				Drawable buttonNextIcon = styleArray.getDrawable(R.styleable.SingleInputFormStyle_sifButtonNextIcon);
-				if(buttonNextIcon != null){
-					mButtonNextIcon = buttonNextIcon;
-				}
-				Drawable buttonFinishIcon = styleArray.getDrawable(R.styleable.SingleInputFormStyle_sifButtonFinishIcon);
-				if(buttonFinishIcon != null){
-					mButtonFinishIcon = buttonFinishIcon;
-				}
+        Drawable buttonNextIcon = array.getDrawable(4);
+        if(buttonNextIcon != null){
+            mButtonNextIcon = buttonNextIcon;
+        }
 
-				mTextFieldBackgroundColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifTextFieldBackgroundColor, mTextFieldBackgroundColor);
-				mProgressBackgroundColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifProgressBackgroundColor, mProgressBackgroundColor);
+        Drawable buttonFinishIcon = array.getDrawable(5);
+        if(buttonFinishIcon != null){
+            mButtonFinishIcon = buttonFinishIcon;
+        }
 
-				mTitleTextColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifTitleTextColor, mTitleTextColor);
-				mDetailsTextColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifDetailsTextColor, mDetailsTextColor);
-				mErrorTextColor = styleArray.getColor(R.styleable.SingleInputFormStyle_sifErrorTextColor, mErrorTextColor);
-			}
-		}
+        array.recycle();
 	}
 
+    private Animation getAnimation(int animationResId, boolean isInAnimation){
+        final Interpolator interpolator;
+
+        if(isInAnimation){
+            interpolator = new DecelerateInterpolator(1.0f);
+        }
+        else{
+            interpolator = new AccelerateInterpolator(1.0f);
+        }
+
+        Animation animation = AnimationUtils.loadAnimation(activity, animationResId);
+        animation.setInterpolator(interpolator);
+
+        return animation;
+    }
+
 	private void setupTitle(){
-		mTitleSwitcher.setInAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_in_to_bottom));
-		mTitleSwitcher.setOutAnimation(AnimationUtils.loadAnimation(activity, R.anim.slide_out_to_top));
+        mTitleSwitcher.setInAnimation(getAnimation(R.anim.slide_in_to_bottom, true));
+        mTitleSwitcher.setOutAnimation(getAnimation(R.anim.slide_out_to_top, false));
 
 		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
 
@@ -250,8 +246,8 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 	}
 
 	private void setupInput(){
-		mInputSwitcher.setInAnimation(AnimationUtils.loadAnimation(activity, R.anim.alpha_in));
-		mInputSwitcher.setOutAnimation(AnimationUtils.loadAnimation(activity, R.anim.alpha_out));
+		mInputSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
+		mInputSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
 		mInputSwitcher.removeAllViews();
 		for(int i = 0; i < stepsSize(); i++){
@@ -260,15 +256,15 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 	}
 
 	private void setupError(){
-		mErrorSwitcher.setInAnimation(AnimationUtils.loadAnimation(activity, android.R.anim.slide_in_left));
-		mErrorSwitcher.setOutAnimation(AnimationUtils.loadAnimation(activity, android.R.anim.slide_out_right));
+        mErrorSwitcher.setInAnimation(getAnimation(android.R.anim.slide_in_left, true));
+        mErrorSwitcher.setOutAnimation(getAnimation(android.R.anim.slide_out_right, false));
 
 		mErrorSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
 
 			@Override
 			public View makeView(){
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_error, null);
-				if(view != null){
+				if(view != null && mErrorTextColor != -1){
 					view.setTextColor(mErrorTextColor);
 				}
 				return view;
@@ -279,15 +275,15 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 	}
 
 	private void setupDetails(){
-		mDetailsSwitcher.setInAnimation(AnimationUtils.loadAnimation(activity, R.anim.alpha_in));
-		mDetailsSwitcher.setOutAnimation(AnimationUtils.loadAnimation(activity, R.anim.alpha_out));
+        mDetailsSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
+        mDetailsSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
 		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
 
 			@Override
 			public View makeView(){
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_details, null);
-				if(view != null){
+				if(view != null && mDetailsTextColor != -1){
 					view.setTextColor(mDetailsTextColor);
 				}
 				return view;
@@ -325,7 +321,6 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 
 	private void updateViews(){
 		Step step = getCurrentStep();
-		step.restore(setupData);
 
 		if(mStepIndex + 1 >= stepsSize()){
 			mNextButton.setImageDrawable(mButtonFinishIcon);
@@ -336,6 +331,8 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 			step.updateView(false);
 		}
 
+		step.restore(setupData);
+
 		setTextFieldBackgroundDrawable();
 
 		mInputSwitcher.setDisplayedChild(mStepIndex);
@@ -344,23 +341,24 @@ public abstract class SingleInputFormActivity extends FragmentActivity{
 		mTitleSwitcher.setText(step.getTitle());
 		mStepText.setText(getString(R.string.page_number, mStepIndex + 1, stepsSize()));
 
-		((TextView)findViewById(R.id.step_text)).setTextColor(mDetailsTextColor);
+        mStepText.setTextColor(mDetailsTextColor);
 
 		updateProgressbar();
 	}
 
 	private void setTextFieldBackgroundDrawable(){
-		Drawable background = mTextField.getBackground();
-		if(background != null){
-			background.setColorFilter(mTextFieldBackgroundColor, PorterDuff.Mode.SRC_IN);
-		}
+        if(mTextFieldBackgroundColor != -1) {
+            mTextField.setCardBackgroundColor(mTextFieldBackgroundColor);
+        }
 	}
 
 	private void setProgressDrawable(){
-		Drawable progressDrawable = mProgressbar.getProgressDrawable();
-		if(progressDrawable != null){
-			progressDrawable.setColorFilter(mProgressBackgroundColor, PorterDuff.Mode.SRC_IN);
-		}
+        if(mProgressBackgroundColor != -1) {
+            Drawable progressDrawable = mProgressbar.getProgressDrawable();
+            if (progressDrawable != null) {
+                progressDrawable.setColorFilter(mProgressBackgroundColor, PorterDuff.Mode.SRC_IN);
+            }
+        }
 	}
 
 	private void updateProgressbar(){

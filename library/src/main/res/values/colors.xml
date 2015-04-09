@@ -16,12 +16,10 @@
   -->
 
 <resources>
-	<color name="default_text_field_background_color">#5a97af</color>
-	<color name="default_progress_background_color">#437181</color>
-	<color name="default_edit_text_background_color">#437181</color>
+    <color name="material_black_87">#de000000</color>
+    <color name="material_black_54">#8a000000</color>
+    <color name="material_black_26">#42000000</color>
 
-	<color name="default_title_text_color">#3b606f</color>
-	<color name="default_details_text_color">#3b606f</color>
-	<color name="default_input_text_color">@android:color/white</color>
-	<color name="default_error_text_color">#3b606f</color>
+    <color name="material_white_87">#deffffff</color>
+    <color name="material_white_26">#42ffffff</color>
 </resources>

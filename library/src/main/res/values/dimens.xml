@@ -16,15 +16,12 @@
   -->
 
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="keyline">16dp</dimen>
+    <dimen name="keyline_card">8dp</dimen>
 
-	<dimen name="text_field_margin">10dp</dimen>
-	<dimen name="text_field_margin_big">18dp</dimen>
-	<dimen name="text_field_margin_small">6dp</dimen>
+    <dimen name="elevation_card">8dp</dimen>
 
-	<dimen name="button_size">48dp</dimen>
+    <dimen name="icon_margin">8dp</dimen>
 
 	<!-- Setup -->
 	<dimen name="setup_progressbar_height">4dp</dimen>
