@@ -1,6 +1,6 @@
-Android-SingleInputForm
+material-singleinputform
 =======================
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Android--SingleInputForm-blue.svg?style=flat)](https://android-arsenal.com/details/1/1163)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-blue.svg?style=flat)](https://android-arsenal.com/details/1/1163)
 
 A single EditText instead of a classical form.
 
@@ -15,86 +15,119 @@ Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, 
 Here is a video demonstrating a sample form:
 http://youtu.be/A99g6NDvn_w
 
+Demo
+----
+A demo app is available on Google Play:
+
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.heinrichreimersoftware.singleinputform.example)
+
 Screenshots
 -----------
 
-| E-mail input | Password error | Date picker |
+| Checkbox input | E-mail input | Password input |
 |:-:|:-:|:-:|
-| ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-19-17.png) | ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-19-50.png) | ![Date picker](http://heinrichreimersoftware.com/static/files/screenshots/2014-06-12-21-20-34.png) |
-| [_TextStep.java_][TS] | [_TextStep.java_][TS] | [_DateStep.java_][DS] |
+| ![Checkbox input](http://i.imgur.com/lsSIFuV.png) | ![E-mail input](http://i.imgur.com/JFB1tTq.png) | ![Password input](http://i.imgur.com/BiLn77T.png) |
+| [_CheckBoxStep.java_][CBS] | [_TextStep.java_][TS] | [_TextStep.java_][TS] |
 
-Usage
+Dependency
+----------
+
+*material-drawer* is available on Maven Central
+
+**Gradle dependency:**
+
+    dependencies {
+	    compile 'com.heinrichreimersoftware.singleinputform:library:2.0.2'
+    }
+
+Get the latest dependency with ["Gradle, please"][GP]
+
+How-To-Use
 -----
-### Gradle
-If you are using Gradle just add maven central repository and add this line to your projects ```build.gradle```
 
-	compile 'com.heinrichreimersoftware.singleinputform:library:1.0'
+**Step 1:** Your `Activity` must extend [`SingleInputFormActivity`][SIFA]:
 
-### Usage
-Just let your _Activity_ extend [_SingleInputFormActivity.java_][SIFA] and implement the abstract methods:
-
-```
-public class MainActivity extends SingleInputFormActivity{
-    private static final String DATA_KEY_EXAMPLE = "example";
-    
-    @Override
-    protected List<Step> getSteps(Context context){
-        List<Step> steps = new ArrayList<Step>();
-        
-        steps.add(
-            new TextStep(context, DATA_KEY_EXAMPLE, InputType.TYPE_CLASS_TEXT, R.string.example, R.string.example_error, R.string.example_details)
-        );
-        
-        ...
-        
-        return steps;
+    public class MainActivity extends SingleInputFormActivity {
+        //...
     }
-    
-    @Override
-    protected void onFormFinished(Bundle data){
-        String text = TextStep.text(data, DATA_KEY_EXAMPLE);
-        ...
-    }
-}
-```
 
-### Customisation
-You can customise the form's style in your styles.xml:
+**Step 2:** Implement abstract methods:
 
-```
-<resources>
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
-        <item name="sifStyle">@style/AppTheme.SingleInputFormStyle</item><!-- reference -->
+    public class MainActivity extends SingleInputFormActivity{
+	    private static final String DATA_KEY_EXAMPLE = "example";
+	    
+	    @Override
+	    protected List<Step> getSteps(Context context){
+	        List<Step> steps = new ArrayList<Step>();
+	        
+	        steps.add(
+	            new TextStep(context, DATA_KEY_EXAMPLE, InputType.TYPE_CLASS_TEXT, R.string.example, R.string.example_error, R.string.example_details)
+	        );
+	        
+	        //Add more steps here...
+	        
+	        return steps;
+	    }
+	    
+	    @Override
+	    protected void onFormFinished(Bundle data){
+            //Get the form data
+	        String text = TextStep.text(data, DATA_KEY_EXAMPLE);
+	        //...
+	    }
+	}
+
+**Step 3:** Theme:
+
+    <style name="YourThemeForSingleInputFormActivity" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- Used for: input field background -->
+        <item name="colorPrimary">@color/material_bordeaux_500</item>
+
+        <!-- Used for: form progress color, status bar color (API 21+) -->
+        <item name="colorPrimaryDark">@color/material_bordeaux_700</item>
+
+        <!-- Used for: title text color, error text color -->
+        <item name="android:textColorPrimary">@color/material_bordeaux_800</item>
+
+        <!-- Used for: details text color, step indicator text color -->
+        <item name="android:textColorSecondary">@color/material_black_54</item>
+
+        <!-- Used for: input text color, input widget color -->
+        <item name="android:textColorPrimaryInverse">@color/material_white_100</item>
+
+        <!-- Used for: input widget color -->
+        <item name="android:textColorSecondaryInverse">@color/material_white_70</item>
+
     </style>
-    
-    <style name="AppTheme.SingleInputFormStyle" parent="SingleInputFormStyle">
-        <item name="sifButtonNextIcon">@drawable/ic_action_next</item><!-- drawable -->
-        <item name="sifButtonFinishIcon">@drawable/ic_action_finish</item><!-- drawable -->
-        
-        <item name="sifTextFieldBackgroundColor">#992044</item><!-- color -->
-        <item name="sifProgressBackgroundColor">#67132B</item><!-- color -->
-        <item name="sifEditTextBackgroundColor">#a94054</item><!-- color -->
-        
-        <item name="sifTitleTextColor">#561529</item><!-- color -->
-        <item name="sifDetailsTextColor">#561529</item><!-- color -->
-        <item name="sifInputTextColor">@android:color/white</item><!-- color -->
-        <item name="sifErrorTextColor">#561529</item>
-        
-        <item name="sifBetterPickerStyle">@style/AppTheme.BetterPickerTheme</item><!-- reference -->
-    </style>
-    
-    <style name="AppTheme.BetterPickerTheme" parent="BetterPickersDialogFragment.Light">
-        <!-- See https://github.com/derekbrameyer/android-betterpickers#theming for more information -->
-        <item name="bpTitleDividerColor">#67132B</item>
-        <item name="bpKeyboardIndicatorColor">#67132B</item>
-    </style>
-</resources>
-```
+
+Changes
+-------
+
+* **Version 2.0:**
+    * `CheckBoxStep` (#6)
+    * `SeekBarStep` (#6)
+    * Material design
+    * Simplified themes (see the tutorial above)
+    * Fixed bug #4
+    * Fixed bug #5
+* **Version 1.0:**
+    * Initial release
+
+Open source libraries
+-------
+
+_material-singleinputform_ uses the following open source libraries or files:
+
+* [singleinputform][4] by [@Flavien Laurent][5] (Apache License 2.0)
+* [DiscreteSeekBar][6] f by [@Gustavo Claramunt][7] (Apache License 2.0)
+* [DateTimePicker][8] by [@Flavien Laurent][5] and [@Edison Wang][9] (Apache License 2.0)
+* [NineOldAndroids][10] by [@Jake Wharton][11] (Apache License 2.0)
 
 License
 -------
 
-    Copyright 2013 Heinrich Reimer
+    Copyright 2015 Heinrich Reimer
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -112,6 +145,15 @@ License
 [1]: https://github.com/flavienlaurent/singleinputform
 [2]: https://github.com/codrops/MinimalForm
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
+[CBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/CheckBoxStep.java
 [TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
-[DS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/DateStep.java
 [SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
+[GP]: http://gradleplease.appspot.com/#com.heinrichreimersoftware.singleinputform
+[4]: https://github.com/flavienlaurent/singleinputform
+[5]: https://github.com/flavienlaurent
+[6]: https://github.com/AnderWeb/discreteSeekBar
+[7]: https://github.com/AnderWeb
+[8]: https://github.com/flavienlaurent/datetimepicker
+[9]: https://github.com/edisonw
+[10]: https://github.com/JakeWharton/NineOldAndroids
+[11]: https://github.com/JakeWharton
