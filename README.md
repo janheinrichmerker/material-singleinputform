@@ -32,7 +32,7 @@ Screenshots
 Dependency
 ----------
 
-*material-drawer* is available on Maven Central
+*material-singleinputform* is available on Maven Central
 
 **Gradle dependency:**
 
@@ -105,8 +105,8 @@ Changes
 -------
 
 * **Version 2.0:**
-    * `CheckBoxStep` (#6)
-    * `SeekBarStep` (#6)
+    * [`CheckBoxStep`][CBS] (#6)
+    * [`SeekBarStep`][SBS] (#6)
     * Material design
     * Simplified themes (see the tutorial above)
     * Fixed bug #4
@@ -147,6 +147,7 @@ License
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
 [CBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/CheckBoxStep.java
 [TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
+[SBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/SeekBarStep.java
 [SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
 [GP]: http://gradleplease.appspot.com/#com.heinrichreimersoftware.singleinputform
 [4]: https://github.com/flavienlaurent/singleinputform
