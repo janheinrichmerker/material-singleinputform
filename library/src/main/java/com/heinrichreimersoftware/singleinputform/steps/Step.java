@@ -20,116 +20,149 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
-public abstract class Step{
+public abstract class Step {
 
-	private Context mContext;
-	private String mDataKey;
-	private View mInputView;
-	private Bundle mData = new Bundle();
+  protected final StepBuilder mBuilder;
+  private Bundle mData = new Bundle();
 
-	private int mTitleResId;
-	private int mErrorResId;
-	private int mDetailsResId;
+  protected Step(StepBuilder builder) {
+    this.mBuilder = builder;
+  }
 
-	private String mTitle;
-	private String mError;
-	private String mDetails;
+  public Context getContext() {
+    return mBuilder.context;
+  }
 
-	public Step(Context context, String dataKey, int titleResId, int errorResId, int detailsResId){
-		mContext = context;
-		mDataKey = dataKey;
-		mTitleResId = titleResId;
-		mErrorResId = errorResId;
-		mDetailsResId = detailsResId;
-		mInputView = onCreateView();
-	}
+  @Deprecated
+  public int getTitleResId() {
+    return mBuilder.titleResId;
+  }
 
-	public Step(Context context, String dataKey, String title, String error, String details){
-		mContext = context;
-		mDataKey = dataKey;
-		mTitle = title;
-		mError = error;
-		mDetails = details;
-		mInputView = onCreateView();
-	}
+  public String getTitle() {
+    if (mBuilder.title != null && !mBuilder.title.equals("")) {
+      return mBuilder.title;
+    }
+    return getContext().getString(mBuilder.titleResId);
+  }
 
-	public void setContext(Context context){
-		mContext = context;
-	}
-	public Context getContext(){
-		return mContext;
-	}
+  @Deprecated
+  public int getErrorResId() {
+    return mBuilder.errorResId;
+  }
 
-	public abstract View onCreateView();
+  public String getError() {
+    if (mBuilder.error != null && !mBuilder.error.equals("")) {
+      return mBuilder.error;
+    }
+    return getContext().getString(mBuilder.errorResId);
+  }
 
-	@Deprecated
-	public int getTitleResId(){
-		return mTitleResId;
-	}
+  @Deprecated
+  public int getDetailsResId() {
+    return mBuilder.detailsResId;
+  }
 
-	public String getTitle(){
-		if(mTitle != null && !mTitle.equals("")){
-			return mTitle;
-		}
-		return getContext().getString(mTitleResId);
-	}
+  public String getDetails() {
+    if (mBuilder.details != null && !mBuilder.details.equals("")) {
+      return mBuilder.details;
+    }
+    return getContext().getString(mBuilder.detailsResId);
+  }
 
-	@Deprecated
-	public int getErrorResId(){
-		return mErrorResId;
-	}
+  public View getView() {
+    if (mBuilder.view == null) {
+      mBuilder.view = create();
+    }
+    return mBuilder.view;
+  }
 
-	public String getError(){
-		if(mError != null && !mError.equals("")){
-			return mError;
-		}
-		return getContext().getString(mErrorResId);
-	}
+  public Bundle data() {
+    return mData;
+  }
 
-	@Deprecated
-	public int getDetailsResId(){
-		return mDetailsResId;
-	}
+  public Bundle save(Bundle setupData) {
+    onSave();
+    if (setupData != null) {
+      setupData.putBundle(mBuilder.dataKey, mData);
+    }
+    return setupData;
+  }
 
-	public String getDetails(){
-		if(mDetails != null && !mDetails.equals("")){
-			return mDetails;
-		}
-		return getContext().getString(mDetailsResId);
-	}
+  public void restore(Bundle setupData) {
+    if (setupData != null) {
+      Bundle data = setupData.getBundle(mBuilder.dataKey);
+      if (data != null) {
+        mData = data;
+      }
+    }
+    onRestore();
+  }
 
-	public abstract void updateView(boolean lastStep);
+  public abstract void updateView(boolean lastStep);
 
-	public View getView(){
-		return mInputView;
-	}
+  public abstract boolean check();
 
-	public abstract boolean check();
+  public abstract View create();
 
-	public Bundle data(){
-		return mData;
-	}
+  protected abstract void onSave();
 
-	public Bundle save(Bundle setupData){
-		onSave();
-		if(setupData != null){
-			setupData.putBundle(mDataKey, mData);
-		}
-		return setupData;
-	}
+  protected abstract void onRestore();
 
-	protected abstract void onSave();
+  public static abstract class StepBuilder<T extends StepBuilder<T>> {
+    protected Context context;
+    protected String dataKey;
+    protected int titleResId;
+    protected int errorResId;
+    protected int detailsResId;
+    protected String title;
+    protected String error;
+    protected String details;
+    protected View view;
 
-	public void restore(Bundle setupData){
-		if(setupData != null){
-			Bundle data = setupData.getBundle(mDataKey);
-			if(data != null){
-				mData = data;
-			}
-		}
-		onRestore();
-	}
+    public StepBuilder() {
+    }
 
-	protected abstract void onRestore();
+    public abstract T self();
 
+    public T setContext(Context context) {
+      this.context = context;
+      return self();
+    }
+
+    public T setDataKey(String dataKey) {
+      this.dataKey = dataKey;
+      return self();
+    }
+
+    public T setTitleResId(int titleResId) {
+      this.titleResId = titleResId;
+      return self();
+    }
+
+    public T setErrorResId(int errorResId) {
+      this.errorResId = errorResId;
+      return self();
+    }
+
+    public T setDetailsResId(int detailsResId) {
+      this.detailsResId = detailsResId;
+      return self();
+    }
+
+    public T setTitle(String title) {
+      this.title = title;
+      return self();
+    }
+
+    public T setError(String error) {
+      this.error = error;
+      return self();
+    }
+
+    public T setDetails(String details) {
+      this.details = details;
+      return self();
+    }
+
+  }
 }
