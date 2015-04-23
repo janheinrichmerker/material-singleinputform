@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -31,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -248,7 +250,17 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
     mInputSwitcher.removeAllViews();
     for (int i = 0; i < stepsSize(); i++) {
-      mInputSwitcher.addView(getStep(i).getView());
+      View input = getStep(i).getView();
+      if (input instanceof EditText) {
+        ((EditText) input).setOnEditorActionListener(new TextView.OnEditorActionListener() {
+          @Override
+          public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            nextStep();
+            return false;
+          }
+        });
+      }
+      mInputSwitcher.addView(input);
     }
   }
 
