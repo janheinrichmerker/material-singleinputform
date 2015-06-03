@@ -27,6 +27,7 @@ import com.heinrichreimersoftware.singleinputform.steps.CheckBoxStep;
 import com.heinrichreimersoftware.singleinputform.steps.DateStep;
 import com.heinrichreimersoftware.singleinputform.steps.SeekBarStep;
 import com.heinrichreimersoftware.singleinputform.steps.Step;
+import com.heinrichreimersoftware.singleinputform.steps.StepCheckerCallback;
 import com.heinrichreimersoftware.singleinputform.steps.TextStep;
 
 import java.util.ArrayList;
@@ -49,43 +50,59 @@ public class MainActivity extends SingleInputFormActivity{
         steps.add(
                 new CheckBoxStep(context, DATA_KEY_EULA, R.string.eula, R.string.eula_title, R.string.eula_error, R.string.eula_details, new CheckBoxStep.StepChecker() {
                     @Override
-                    public boolean check(boolean input) {
-                        return input;
+                    public void check(boolean input, StepCheckerCallback stepCheckerCallback) {
+                        if(input)
+							stepCheckerCallback.onInputInvalid();
+						else
+							stepCheckerCallback.onInputInvalid();
                     }
                 })
         );
         steps.add(
                 new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepChecker() {
                     @Override
-                    public boolean check(String input) {
-                        return android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches();
+                    public void check(String input, StepCheckerCallback stepCheckerCallback) {
+						if(android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches())
+							stepCheckerCallback.onInputInvalid();
+						else
+							stepCheckerCallback.onInputInvalid();
                     }
                 })
         );
 		steps.add(
 				new TextStep(context, DATA_KEY_PASSWORD, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, R.string.password, R.string.password_error, R.string.password_details, new TextStep.StepChecker() {
 					@Override
-					public boolean check(String input) {
-						return input.length() >= 5;
+					public void check(String input, StepCheckerCallback stepCheckerCallback) {
+						if(input.length() >= 5)
+							stepCheckerCallback.onInputInvalid();
+						else
+							stepCheckerCallback.onInputInvalid();
 					}
 				})
 		);
 		steps.add(
 				new DateStep(context, DATA_KEY_BIRTHDAY, R.string.birthday, R.string.birthday_error, R.string.birthday_details, new DateStep.StepChecker(){
 					@Override
-					public boolean check(int year, int month, int day){
+					public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
 						Calendar today = new GregorianCalendar();
 						Calendar birthday = new GregorianCalendar(year, month, day);
 						today.add(Calendar.YEAR, -14);
-						return today.after(birthday);
+
+						if(today.after(birthday))
+							stepCheckerCallback.onInputInvalid();
+						else
+							stepCheckerCallback.onInputInvalid();
 					}
 				})
 		);
 		steps.add(
 				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepChecker() {
 					@Override
-					public boolean check(int progress) {
-						return progress >= 160;
+					public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+						if(progress >= 160)
+							stepCheckerCallback.onInputInvalid();
+						else
+							stepCheckerCallback.onInputInvalid();
 					}
 				})
 		);
