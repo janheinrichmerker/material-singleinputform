@@ -52,7 +52,7 @@ public class MainActivity extends SingleInputFormActivity{
                     @Override
                     public void check(boolean input, StepCheckerCallback stepCheckerCallback) {
                         if(input)
-							stepCheckerCallback.onInputInvalid();
+							stepCheckerCallback.onInputValid();
 						else
 							stepCheckerCallback.onInputInvalid();
                     }
@@ -63,7 +63,7 @@ public class MainActivity extends SingleInputFormActivity{
                     @Override
                     public void check(String input, StepCheckerCallback stepCheckerCallback) {
 						if(android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches())
-							stepCheckerCallback.onInputInvalid();
+							stepCheckerCallback.onInputValid();
 						else
 							stepCheckerCallback.onInputInvalid();
                     }
@@ -74,7 +74,7 @@ public class MainActivity extends SingleInputFormActivity{
 					@Override
 					public void check(String input, StepCheckerCallback stepCheckerCallback) {
 						if(input.length() >= 5)
-							stepCheckerCallback.onInputInvalid();
+							stepCheckerCallback.onInputValid();
 						else
 							stepCheckerCallback.onInputInvalid();
 					}
@@ -89,7 +89,7 @@ public class MainActivity extends SingleInputFormActivity{
 						today.add(Calendar.YEAR, -14);
 
 						if(today.after(birthday))
-							stepCheckerCallback.onInputInvalid();
+							stepCheckerCallback.onInputValid();
 						else
 							stepCheckerCallback.onInputInvalid();
 					}
@@ -100,7 +100,7 @@ public class MainActivity extends SingleInputFormActivity{
 					@Override
 					public void check(int progress, StepCheckerCallback stepCheckerCallback) {
 						if(progress >= 160)
-							stepCheckerCallback.onInputInvalid();
+							stepCheckerCallback.onInputValid();
 						else
 							stepCheckerCallback.onInputInvalid();
 					}
