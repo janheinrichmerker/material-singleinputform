@@ -297,7 +297,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		if(mStepIndex >= stepsSize()){
 			hideSoftInput();
 			onFormFinished(setupData);
-			finish();
+//			finish(); removed to allow for more actions after last step e.g. async posting to the server
 			return;
 		}
 		updateViews();
