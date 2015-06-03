@@ -44,8 +44,8 @@ public class CheckBoxStep extends Step{
     public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId) {
         this(context, dataKey, textResId, titleResId, errorResId, detailsResId, new StepChecker() {
             @Override
-            public boolean check(boolean checked) {
-                return true;
+            public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
             }
         });
     }
@@ -59,8 +59,8 @@ public class CheckBoxStep extends Step{
     public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details) {
         this(context, dataKey, text, title, error, details, new StepChecker() {
             @Override
-            public boolean check(boolean checked) {
-                return true;
+            public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
             }
         });
     }
@@ -110,8 +110,8 @@ public class CheckBoxStep extends Step{
     }
 
     @Override
-    public boolean check() {
-        return mChecker.check(getCheckBox().isChecked());
+    public void check(StepCheckerCallback stepCheckerCallback) {
+        mChecker.check(getCheckBox().isChecked(), stepCheckerCallback);
     }
 
     @Override
@@ -135,6 +135,6 @@ public class CheckBoxStep extends Step{
     }
 
     public interface StepChecker{
-        boolean check(boolean checked);
+        void check(boolean checked, StepCheckerCallback stepCheckerCallback);
     }
 }

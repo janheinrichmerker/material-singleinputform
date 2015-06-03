@@ -40,6 +40,7 @@ import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 import com.heinrichreimersoftware.singleinputform.steps.Step;
+import com.heinrichreimersoftware.singleinputform.steps.StepCheckerCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.util.Property;
 
@@ -230,12 +231,12 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
         mTitleSwitcher.setInAnimation(getAnimation(R.anim.slide_in_to_bottom, true));
         mTitleSwitcher.setOutAnimation(getAnimation(R.anim.slide_out_to_top, false));
 
-		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
 			@Override
-			public View makeView(){
+			public View makeView() {
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_title, null);
-				if(view != null){
+				if (view != null) {
 					view.setTextColor(mTitleTextColor);
 				}
 				return view;
@@ -278,12 +279,12 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
         mDetailsSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
         mDetailsSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
-		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
 			@Override
-			public View makeView(){
+			public View makeView() {
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_details, null);
-				if(view != null && mDetailsTextColor != -1){
+				if (view != null && mDetailsTextColor != -1) {
 					view.setTextColor(mDetailsTextColor);
 				}
 				return view;
@@ -373,27 +374,39 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 	}
 
 	protected void nextStep(){
-		Step step = getCurrentStep();
-		boolean checkStep = checkStep();
-		if(!checkStep){
-			if(!mErrored){
-				mErrored = true;
-				mErrorSwitcher.setText(step.getError());
-			}
-		}
-		else{
-			mErrored = false;
-		}
-		if(mErrored){
-			return;
-		}
-		setupData = step.save(setupData);
+		final Step step = getCurrentStep();
 
-		mStepIndex++;
-		updateStep();
+		checkStep(new StepCheckerCallback() {
+
+			@Override
+			public void onInputValid() {
+				mErrored = false;
+
+				setupData = step.save(setupData);
+
+				mStepIndex++;
+				updateStep();
+			}
+
+			@Override
+			public void onInputInvalid() {
+				if(!mErrored){
+					mErrored = true;
+					mErrorSwitcher.setText(step.getError());
+				}
+			}
+
+			@Override
+			public void onInputInvalid(String error) {
+				if(!mErrored){
+					mErrored = true;
+					mErrorSwitcher.setText(error);
+				}
+			}
+		});
 	}
 
-	private boolean checkStep(){
-		return getCurrentStep().check();
+	private void checkStep(StepCheckerCallback stepCheckerCallback){
+		getCurrentStep().check(stepCheckerCallback);
 	}
 }

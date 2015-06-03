@@ -30,9 +30,12 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new TextStep.StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
+            public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                if(!TextUtils.isEmpty(input))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
 		}, l);
 
 		mChecker = checker;
@@ -76,8 +79,8 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
 		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
@@ -89,8 +92,8 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId){
 		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+					stepCheckerCallback.onInputValid();
 			}
 		}, null);
 	}
@@ -98,8 +101,11 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new TextStep.StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+				if(!TextUtils.isEmpty(input))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputInvalid();
 			}
 		}, l);
 
@@ -144,8 +150,8 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, String title, String error, String details, TextView.OnEditorActionListener l){
 		this(context, dataKey, title, error, details, new StepChecker(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+				stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
@@ -157,8 +163,8 @@ public class DateStep extends TextStep{
 	public DateStep(Context context, String dataKey, String title, String error, String details){
 		this(context, dataKey, title, error, details, new StepChecker(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+				stepCheckerCallback.onInputValid();
 			}
 		}, null);
 	}
@@ -205,8 +211,8 @@ public class DateStep extends TextStep{
 	}
 
 	@Override
-	public boolean check(){
-		return mChecker.check(mYear, mMonth, mDay);
+	public void check(StepCheckerCallback stepCheckerCallback) {
+		mChecker.check(mYear, mMonth, mDay, stepCheckerCallback);
 	}
 
 	@Override
@@ -225,6 +231,6 @@ public class DateStep extends TextStep{
 	}
 
 	public interface StepChecker{
-		boolean check(int year, int month, int day);
+		void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback);
 	}
 }

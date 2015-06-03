@@ -44,10 +44,10 @@ public class TextStep extends Step{
 	}
 
 	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
+		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker() {
 			@Override
-			public boolean check(String input){
-				return true;
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
@@ -57,10 +57,10 @@ public class TextStep extends Step{
 	}
 
 	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
+		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker() {
 			@Override
-			public boolean check(String input){
-				return true;
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, null);
 	}
@@ -73,10 +73,10 @@ public class TextStep extends Step{
 	}
 
 	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
+		this(context, dataKey, inputType, title, error, details, new StepChecker() {
 			@Override
-			public boolean check(String input){
-				return true;
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
@@ -88,8 +88,8 @@ public class TextStep extends Step{
 	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details){
 		this(context, dataKey, inputType, title, error, details, new StepChecker(){
 			@Override
-			public boolean check(String input){
-				return true;
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, null);
 	}
@@ -144,13 +144,14 @@ public class TextStep extends Step{
 	}
 
 	@Override
-	public boolean check(){
+	public void check(StepCheckerCallback stepCheckerCallback) {
 		String inputString = "";
 		CharSequence inputText = getView().getText();
 		if(inputText != null){
 			inputString = inputText.toString();
 		}
-		return mChecker.check(inputString);
+
+		mChecker.check(inputString, stepCheckerCallback);
 	}
 
 	@Override
@@ -213,6 +214,6 @@ public class TextStep extends Step{
 	}
 
 	public interface StepChecker{
-		boolean check(String input);
+		void check(String input, StepCheckerCallback stepCheckerCallback);
 	}
 }

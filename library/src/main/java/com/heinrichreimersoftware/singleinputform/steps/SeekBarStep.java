@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -49,8 +50,8 @@ public class SeekBarStep extends Step {
     public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId) {
         this(context, dataKey, min, max, titleResId, errorResId, detailsResId, new StepChecker() {
             @Override
-            public boolean check(int progress) {
-                return true;
+            public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
             }
         });
     }
@@ -65,8 +66,8 @@ public class SeekBarStep extends Step {
     public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details) {
         this(context, dataKey, min, max, title, error, details, new StepChecker() {
             @Override
-            public boolean check(int progress) {
-                return true;
+            public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+                    stepCheckerCallback.onInputValid();
             }
         });
     }
@@ -107,8 +108,8 @@ public class SeekBarStep extends Step {
     }
 
     @Override
-    public boolean check() {
-        return mChecker.check(getView().getProgress());
+    public void check(StepCheckerCallback stepCheckerCallback) {
+        mChecker.check(getView().getProgress(), stepCheckerCallback);
     }
 
     @Override
@@ -137,6 +138,6 @@ public class SeekBarStep extends Step {
     }
 
     public interface StepChecker{
-        boolean check(int progress);
+        void check(int progress, StepCheckerCallback stepCheckerCallback);
     }
 }

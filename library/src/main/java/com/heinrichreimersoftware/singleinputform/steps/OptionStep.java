@@ -35,8 +35,11 @@ public class OptionStep extends TextStep{
 	public OptionStep(final Context context, String dataKey, final String[] options, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+				if(!TextUtils.isEmpty(input))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputValid();
 			}
 		}, l);
 
@@ -65,8 +68,11 @@ public class OptionStep extends TextStep{
 	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                if(!TextUtils.isEmpty(input))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
 			}
 		}, l);
 
@@ -106,9 +112,12 @@ public class OptionStep extends TextStep{
 	public OptionStep(final Context context, String dataKey, final String[] options, final String title, String error, String details, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
+            public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                if(!TextUtils.isEmpty(input))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
 		}, l);
 
 		mOptions = options;
@@ -136,9 +145,12 @@ public class OptionStep extends TextStep{
 	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final String title, String error, String details, TextView.OnEditorActionListener l){
 		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
+            public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                if(!TextUtils.isEmpty(input))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
 		}, l);
 
 		String[] options = new String[optionsResIds.length];

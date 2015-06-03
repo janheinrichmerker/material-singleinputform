@@ -104,7 +104,7 @@ public abstract class Step{
 		return mInputView;
 	}
 
-	public abstract boolean check();
+	public abstract void check(StepCheckerCallback stepCheckerCallback);
 
 	public Bundle data(){
 		return mData;
