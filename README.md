@@ -37,7 +37,7 @@ Dependency
 **Gradle dependency:**
 
     dependencies {
-	    compile 'com.heinrichreimersoftware.singleinputform:library:2.0.2'
+	    compile 'com.heinrichreimersoftware.singleinputform:library:2.0'
     }
 
 Get the latest dependency with ["Gradle, please"][GP]
