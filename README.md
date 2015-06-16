@@ -15,6 +15,10 @@ Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, 
 Here is a video demonstrating a sample form:
 http://youtu.be/A99g6NDvn_w
 
+Information
+----
+I'm currently not actively developing this library because of school work. Until August I'll only merge pull requests. Thanks for your patience.
+
 Demo
 ----
 A demo app is available on Google Play:
