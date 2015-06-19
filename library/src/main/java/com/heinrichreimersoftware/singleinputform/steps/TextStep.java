@@ -26,193 +26,181 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.heinrichreimersoftware.singleinputform.R;
 
-public class TextStep extends Step{
-	public static final String DATA_TEXT = "data_text";
-	private int mInputType;
-	private StepChecker mChecker;
+public class TextStep extends Step {
+  public static final String DATA_TEXT = "data_text";
 
-	private int mEditTextColor;
+  private int mEditTextColor;
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, titleResId, errorResId, detailsResId);
-		mInputType = inputType;
-		mChecker = checker;
-		getView().setOnEditorActionListener(l);
-	}
+  protected TextStep(TextStepBuilder builder) {
+    super(builder);
+  }
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, l);
-	}
+  private TextStepBuilder getBuilder() {
+    return (TextStepBuilder) mBuilder;
+  }
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, checker, null);
-	}
+  public static String text(Bundle data, String dataKey) {
+    String text = null;
+    if (data != null && data.containsKey(dataKey)) {
+      Bundle bundleText = data.getBundle(dataKey);
+      if (bundleText != null) {
+        text = bundleText.getString(DATA_TEXT);
+      }
+    }
+    return text;
+  }
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, null);
-	}
+  @Override
+  public View create() {
+    loadTheme();
 
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, title, error, details);
-		mInputType = inputType;
-		mChecker = checker;
-		getView().setOnEditorActionListener(l);
-	}
+    EditText editText = (EditText) View.inflate(getContext(), R.layout.view_input, null);
+    editText.setTextColor(mEditTextColor);
 
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, l);
-	}
+    return editText;
+  }
 
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker){
-		this(context, dataKey, inputType, title, error, details, checker, null);
-	}
+  @Override
+  public void updateView(boolean lastStep) {
+    Log.d("sif", "updateView(" + lastStep + ")");
+    if (lastStep) {
+      setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+    } else {
+      setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+    }
 
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, null);
-	}
+    getView().setInputType(getBuilder().inputType);
+    if (getBuilder().inputType == InputType.TYPE_NULL) {
+      hideSoftInput();
+      Log.d("sif", "hideSoftInput()");
+    } else {
+      showSoftInput();
+      Log.d("sif", "showSoftInput()");
+    }
+  }
 
-	public static String text(Bundle data, String dataKey){
-		String text = null;
-		if(data != null && data.containsKey(dataKey)){
-			Bundle bundleText = data.getBundle(dataKey);
-			if(bundleText != null){
-				text = bundleText.getString(DATA_TEXT);
-			}
-		}
-		return text;
-	}
+  @Override
+  public TextView getView() {
+    if (super.getView() instanceof TextView) {
+      return (TextView) super.getView();
+    }
+    throw new ClassCastException("Input view must be TextView");
+  }
 
-	@Override
-	public View onCreateView(){
-		loadTheme();
+  @Override
+  public boolean check() {
+    String inputString = "";
+    CharSequence inputText = getView().getText();
+    if (inputText != null) {
+      inputString = inputText.toString();
+    }
+    return getBuilder().checker.check(inputString);
+  }
 
-		EditText editText = (EditText) View.inflate(getContext(), R.layout.view_input, null);
-		editText.setTextColor(mEditTextColor);
+  @Override
+  protected void onSave() {
+    data().putString(DATA_TEXT, getText().toString());
+  }
 
-		return editText;
-	}
+  @Override
+  protected void onRestore() {
+    String text = data().getString(DATA_TEXT);
+    if (text != null && !text.equals("")) {
+      setText(text);
+    } else {
+      setText("");
+    }
+  }
 
-	@Override
-	public void updateView(boolean lastStep){
-		Log.d("sif", "updateView(" + lastStep + ")");
-		if(lastStep){
-			setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-		}
-		else{
-			setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-		}
-		getView().setInputType(mInputType);
-		if(mInputType == InputType.TYPE_NULL){
-			hideSoftInput();
-			Log.d("sif", "hideSoftInput()");
-		}
-		else{
-			showSoftInput();
-			Log.d("sif", "showSoftInput()");
-		}
-	}
+  public CharSequence getText() {
+    return getView().getText();
+  }
 
-	@Override
-	public TextView getView(){
-		if(super.getView() instanceof TextView){
-			return (TextView) super.getView();
-		}
-		throw new ClassCastException("Input view must be TextView");
-	}
+  public void setText(CharSequence text) {
+    getView().setText(text);
+  }
 
-	@Override
-	public boolean check(){
-		String inputString = "";
-		CharSequence inputText = getView().getText();
-		if(inputText != null){
-			inputString = inputText.toString();
-		}
-		return mChecker.check(inputString);
-	}
+  public void setImeOptions(int imeOptions) {
+    getView().setImeOptions(imeOptions);
+  }
 
-	@Override
-	protected void onSave(){
-		data().putString(DATA_TEXT, getText().toString());
-	}
+  private void hideSoftInput() {
+    Context context = getContext();
+    if (context != null) {
+      InputMethodManager imm = (InputMethodManager) context.getSystemService(
+          Context.INPUT_METHOD_SERVICE);
+      imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    }
+  }
 
-	@Override
-	protected void onRestore(){
-		String text = data().getString(DATA_TEXT);
-		if(text != null && !text.equals("")){
-			setText(text);
-		}
-		else{
-			setText("");
-		}
-	}
+  private void showSoftInput() {
+    Context context = getContext();
+    if (context != null) {
+      InputMethodManager imm = (InputMethodManager) context.getSystemService(
+          Context.INPUT_METHOD_SERVICE);
+      getView().requestFocus();
+      imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+  }
 
-	public CharSequence getText(){
-		return getView().getText();
-	}
+  public void setOnClickListener(View.OnClickListener l) {
+    getView().setOnClickListener(l);
+  }
 
-	public void setText(CharSequence text){
-		getView().setText(text);
-	}
+  private void loadTheme() {
+    /* Custom values */
+    int[] attrs = { android.R.attr.textColorPrimaryInverse };
+    TypedArray array = getContext().obtainStyledAttributes(attrs);
 
-	public void setImeOptions(int imeOptions){
-		getView().setImeOptions(imeOptions);
-	}
+    mEditTextColor = array.getColor(0, 0);
 
-	private void hideSoftInput(){
-		Context context = getContext();
-		if(context != null){
-			InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-		}
-	}
+    array.recycle();
+  }
 
-	private void showSoftInput(){
-		Context context = getContext();
-		if(context != null){
-			InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-			getView().requestFocus();
-			imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-		}
-	}
+  public static class TextInnerStepBuilder extends TextStepBuilder<TextInnerStepBuilder> {
 
-	public void setOnClickListener(View.OnClickListener l){
-		getView().setOnClickListener(l);
-	}
+    @Override
+    public TextInnerStepBuilder self() {
+      return this;
+    }
 
-	private void loadTheme(){
-		/* Custom values */
-        int[] attrs = {android.R.attr.textColorPrimaryInverse};
-        TypedArray array = getContext().obtainStyledAttributes(attrs);
+    public TextStep createStep() {
+      if (this.checker == null) {
+        setChecker(new StepChecker() {
+          @Override
+          public boolean check(String input) {
+            return true;
+          }
+        });
+      }
+      return new TextStep(this);
+    }
+  }
 
-        mEditTextColor = array.getColor(0, 0);
+  public abstract static class TextStepBuilder<T extends TextStepBuilder<T>> extends
+      StepBuilder<T> {
 
-        array.recycle();
-	}
+    private int inputType;
+    protected StepChecker checker;
 
-	public interface StepChecker{
-		boolean check(String input);
-	}
+    public TextStepBuilder() {
+    }
+
+    public T setChecker(StepChecker checker) {
+      this.checker = checker;
+      return self();
+    }
+
+    public T setInputType(int inputType) {
+      this.inputType = inputType;
+      return self();
+    }
+
+  }
+
+  public interface StepChecker {
+    boolean check(String input);
+  }
 }

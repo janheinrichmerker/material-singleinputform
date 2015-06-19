@@ -17,16 +17,20 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@android:id/background" android:drawable="@android:color/transparent">
-	</item>
+  <item
+      android:id="@android:id/background"
+      android:drawable="@android:color/transparent"
+      >
+  </item>
 
-    <item android:id="@android:id/progress">
-		<scale android:scaleWidth="100%">
-			<shape>
-				<corners android:radius="@dimen/setup_textfield_corner_radius"/>
-				<solid android:color="?attr/colorPrimary"/>
-			</shape>
-		</scale>
-    </item>
+  <item android:id="@android:id/progress">
+    <scale android:scaleWidth="100%">
+      <shape>
+        <corners android:radius="@dimen/setup_textfield_corner_radius"/>
+        <!-- ?attr/colorPrimary was making it crash with <v21 -->
+        <solid android:color="#ffffff"/>
+      </shape>
+    </scale>
+  </item>
 
 </layer-list>

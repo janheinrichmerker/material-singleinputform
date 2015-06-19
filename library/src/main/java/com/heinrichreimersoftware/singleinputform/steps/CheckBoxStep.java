@@ -16,53 +16,24 @@
 
 package com.heinrichreimersoftware.singleinputform.steps;
 
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-
 import com.heinrichreimersoftware.singleinputform.R;
 
-public class CheckBoxStep extends Step{
+public class CheckBoxStep extends Step {
     public static final String DATA_CHECKED = "data_checked";
-
-    private int mTextResId;
-    private String mText;
-
-    private StepChecker mChecker;
 
     private int mTextColor;
 
-    public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId, StepChecker checker) {
-        super(context, dataKey, titleResId, errorResId, detailsResId);
-        mTextResId = textResId;
-        mChecker = checker;
+    public CheckBoxStep(CheckBoxStepBuilder checkBoxStepBuilder) {
+        super(checkBoxStepBuilder);
     }
 
-    public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId) {
-        this(context, dataKey, textResId, titleResId, errorResId, detailsResId, new StepChecker() {
-            @Override
-            public boolean check(boolean checked) {
-                return true;
-            }
-        });
-    }
-
-    public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details, StepChecker checker) {
-        super(context, dataKey, title, error, details);
-        mText = text;
-        mChecker = checker;
-    }
-
-    public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details) {
-        this(context, dataKey, text, title, error, details, new StepChecker() {
-            @Override
-            public boolean check(boolean checked) {
-                return true;
-            }
-        });
+    private CheckBoxStepBuilder getBuilder() {
+        return (CheckBoxStepBuilder) mBuilder;
     }
 
     public static boolean checked(Bundle data, String dataKey){
@@ -77,7 +48,7 @@ public class CheckBoxStep extends Step{
     }
 
     @Override
-    public FrameLayout onCreateView() {
+    public View create() {
         loadTheme();
 
         FrameLayout layout = (FrameLayout) View.inflate(getContext(), R.layout.view_check_box, null);
@@ -89,11 +60,11 @@ public class CheckBoxStep extends Step{
 
     @Override
     public void updateView(boolean lastStep) {
-        if(mTextResId != 0){
-            getCheckBox().setText(getContext().getString(mTextResId));
+        if(getBuilder().textResId != 0){
+            getCheckBox().setText(getContext().getString(getBuilder().textResId));
         }
         else{
-            getCheckBox().setText(mText);
+            getCheckBox().setText(getBuilder().text);
         }
     }
 
@@ -111,7 +82,7 @@ public class CheckBoxStep extends Step{
 
     @Override
     public boolean check() {
-        return mChecker.check(getCheckBox().isChecked());
+        return getBuilder().checker.check(getCheckBox().isChecked());
     }
 
     @Override
@@ -132,6 +103,48 @@ public class CheckBoxStep extends Step{
         mTextColor = array.getColor(0, 0);
 
         array.recycle();
+    }
+
+    public static class CheckBoxStepBuilder extends StepBuilder<CheckBoxStepBuilder> {
+
+        private int textResId;
+        private String text;
+        private StepChecker checker;
+
+        public CheckBoxStepBuilder() {
+        }
+
+        @Override
+        public CheckBoxStepBuilder self() {
+            return this;
+        }
+
+        public CheckBoxStepBuilder setTextResId(int textResId) {
+            this.textResId = textResId;
+            return this;
+        }
+
+        public CheckBoxStepBuilder setText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        public CheckBoxStepBuilder setChecker(StepChecker checker) {
+            this.checker = checker;
+            return this;
+        }
+
+        public CheckBoxStep createStep() {
+            if (checker == null) {
+                setChecker(new StepChecker() {
+                    @Override
+                    public boolean check(boolean checked) {
+                        return true;
+                    }
+                });
+            }
+            return new CheckBoxStep(this);
+        }
     }
 
     public interface StepChecker{

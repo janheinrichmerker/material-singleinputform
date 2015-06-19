@@ -16,12 +16,13 @@
   -->
 
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:singleLine="true"
-	android:imeOptions="actionNext"
-	android:gravity="start|center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:singleLine="true"
+    android:imeOptions="actionNext"
+    android:gravity="start|center_vertical"
     android:padding="@dimen/keyline_card"
     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
     android:textColor="?android:attr/textColorPrimaryInverse"
-    android:background="@android:color/transparent"/>
+    android:background="@android:color/transparent"
+    />
