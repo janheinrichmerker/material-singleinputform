@@ -16,6 +16,7 @@
 
 package com.heinrichreimersoftware.singleinputform.example;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
@@ -27,7 +28,6 @@ import com.heinrichreimersoftware.singleinputform.steps.CheckBoxStep;
 import com.heinrichreimersoftware.singleinputform.steps.DateStep;
 import com.heinrichreimersoftware.singleinputform.steps.SeekBarStep;
 import com.heinrichreimersoftware.singleinputform.steps.Step;
-import com.heinrichreimersoftware.singleinputform.steps.StepCheckerCallback;
 import com.heinrichreimersoftware.singleinputform.steps.TextStep;
 
 import java.util.ArrayList;
@@ -44,26 +44,60 @@ public class MainActivity extends SingleInputFormActivity{
 	private static final String DATA_KEY_BIRTHDAY = "birthday";
 	private static final String DATA_KEY_CITY = "city";
 
+	private ProgressDialog mProgressDialog;
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        //lets clean up the dialog. No need for fancy lifecycle handling in the demo
+        if(mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
+
+        mProgressDialog = null;
+    }
+
 	@Override
 	protected List<Step> getSteps(Context context){
 		List<Step> steps = new ArrayList<Step>();
         steps.add(
                 new CheckBoxStep(context, DATA_KEY_EULA, R.string.eula, R.string.eula_title, R.string.eula_error, R.string.eula_details, new CheckBoxStep.StepChecker() {
                     @Override
-                    public void check(boolean input, StepCheckerCallback stepCheckerCallback) {
-                        if(input)
-							stepCheckerCallback.onInputValid();
-						else
-							stepCheckerCallback.onInputInvalid();
+                    public boolean check(boolean input) {
+                        return input;
                     }
                 })
         );
         steps.add(
-                new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepChecker() {
+                new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepCheckerAsync() {
                     @Override
-                    public void check(String input, StepCheckerCallback stepCheckerCallback) {
-						if(android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches())
-							stepCheckerCallback.onInputValid();
+                    public void check(String input, final Step.StepCheckerCallback stepCheckerCallback) {
+						if(android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+                            mProgressDialog = ProgressDialog.show(MainActivity.this, "Validating", "Checking if email is unique on the server...", true, false);
+
+                            //lets simulate a long running process
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+
+                                    }
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run()
+                                        {
+                                            mProgressDialog.dismiss();
+                                            mProgressDialog = null;
+                                            stepCheckerCallback.onInputValid();
+                                        }
+                                    });
+                                }
+                            }).start();
+                        }
 						else
 							stepCheckerCallback.onInputInvalid();
                     }
@@ -72,33 +106,27 @@ public class MainActivity extends SingleInputFormActivity{
 		steps.add(
 				new TextStep(context, DATA_KEY_PASSWORD, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, R.string.password, R.string.password_error, R.string.password_details, new TextStep.StepChecker() {
 					@Override
-					public void check(String input, StepCheckerCallback stepCheckerCallback) {
-						if(input.length() >= 5)
-							stepCheckerCallback.onInputValid();
-						else
-							stepCheckerCallback.onInputInvalid();
+					public boolean check(String input) {
+						return input.length() >= 5;
 					}
 				})
 		);
 		steps.add(
 				new DateStep(context, DATA_KEY_BIRTHDAY, R.string.birthday, R.string.birthday_error, R.string.birthday_details, new DateStep.StepChecker(){
 					@Override
-					public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+					public boolean check(int year, int month, int day) {
 						Calendar today = new GregorianCalendar();
 						Calendar birthday = new GregorianCalendar(year, month, day);
 						today.add(Calendar.YEAR, -14);
 
-						if(today.after(birthday))
-							stepCheckerCallback.onInputValid();
-						else
-							stepCheckerCallback.onInputInvalid();
+						return today.after(birthday);
 					}
 				})
 		);
 		steps.add(
-				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepChecker() {
+				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepCheckerAsync() {
 					@Override
-					public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+					public void check(int progress, Step.StepCheckerCallback stepCheckerCallback) {
 						if(progress >= 160)
 							stepCheckerCallback.onInputValid();
 						else
