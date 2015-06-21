@@ -132,4 +132,12 @@ public abstract class Step{
 
 	protected abstract void onRestore();
 
+	/**
+     * Created by user on 6/3/2015.
+     */
+    public static interface StepCheckerCallback {
+        void onInputValid();
+        void onInputInvalid();
+        void onInputInvalid(String error);
+    }
 }
