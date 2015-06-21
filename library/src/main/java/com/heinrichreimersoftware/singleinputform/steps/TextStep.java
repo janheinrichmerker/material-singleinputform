@@ -32,11 +32,11 @@ import com.heinrichreimersoftware.singleinputform.R;
 public class TextStep extends Step{
 	public static final String DATA_TEXT = "data_text";
 	private int mInputType;
-	private StepChecker mChecker;
+	private StepCheckerAsync mChecker;
 
 	private int mEditTextColor;
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
+	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, titleResId, errorResId, detailsResId);
 		mInputType = inputType;
 		mChecker = checker;
@@ -44,7 +44,7 @@ public class TextStep extends Step{
 	}
 
 	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker() {
+		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -52,12 +52,24 @@ public class TextStep extends Step{
 		}, l);
 	}
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker){
+	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker){
 		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, checker, null);
 	}
 
+	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, final StepChecker checker){
+		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
+			@Override
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+				if(checker.check(input))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputInvalid();
+			}
+		});
+	}
+
 	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker() {
+		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -65,15 +77,27 @@ public class TextStep extends Step{
 		}, null);
 	}
 
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepCheckerAsync checker, TextView.OnEditorActionListener l){
 		super(context, dataKey, title, error, details);
 		mInputType = inputType;
 		mChecker = checker;
 		getView().setOnEditorActionListener(l);
 	}
 
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, final StepChecker checker, TextView.OnEditorActionListener l){
+		this(context, dataKey, inputType, title, error, details, new StepCheckerAsync(){
+			@Override
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+				if(checker.check(input))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputInvalid();
+			}
+		}, l);
+	}
+
 	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, title, error, details, new StepChecker() {
+		this(context, dataKey, inputType, title, error, details, new StepCheckerAsync() {
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -81,12 +105,16 @@ public class TextStep extends Step{
 		}, l);
 	}
 
+	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepCheckerAsync checker){
+		this(context, dataKey, inputType, title, error, details, checker, null);
+	}
+
 	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker){
 		this(context, dataKey, inputType, title, error, details, checker, null);
 	}
 
 	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
+		this(context, dataKey, inputType, title, error, details, new StepCheckerAsync(){
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -213,7 +241,11 @@ public class TextStep extends Step{
         array.recycle();
 	}
 
-	public interface StepChecker{
+	public interface StepCheckerAsync {
 		void check(String input, StepCheckerCallback stepCheckerCallback);
+	}
+
+	public interface StepChecker {
+		boolean check(String input);
 	}
 }

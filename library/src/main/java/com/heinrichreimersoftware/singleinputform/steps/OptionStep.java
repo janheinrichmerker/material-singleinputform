@@ -33,7 +33,7 @@ public class OptionStep extends TextStep{
 	private int mSelectedItemPos = -1;
 
 	public OptionStep(final Context context, String dataKey, final String[] options, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
+		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepCheckerAsync(){
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
 				if(!TextUtils.isEmpty(input))
@@ -66,7 +66,7 @@ public class OptionStep extends TextStep{
 	}
 
 	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
+		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepCheckerAsync(){
 			@Override
 			public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 if(!TextUtils.isEmpty(input))
@@ -110,7 +110,7 @@ public class OptionStep extends TextStep{
 	}
 
 	public OptionStep(final Context context, String dataKey, final String[] options, final String title, String error, String details, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepCheckerAsync(){
 			@Override
             public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 if(!TextUtils.isEmpty(input))
@@ -143,7 +143,7 @@ public class OptionStep extends TextStep{
 	}
 
 	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final String title, String error, String details, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepCheckerAsync(){
 			@Override
             public void check(String input, StepCheckerCallback stepCheckerCallback) {
                 if(!TextUtils.isEmpty(input))

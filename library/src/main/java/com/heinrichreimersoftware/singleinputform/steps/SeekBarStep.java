@@ -18,9 +18,7 @@ package com.heinrichreimersoftware.singleinputform.steps;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -28,10 +26,11 @@ import com.heinrichreimersoftware.singleinputform.R;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
+
 public class SeekBarStep extends Step {
     public static final String DATA_PROGRESS = "data_progress";
 
-    private StepChecker mChecker;
+    private StepCheckerAsync mChecker;
 
     private int mMin;
     private int mMax;
@@ -40,7 +39,7 @@ public class SeekBarStep extends Step {
     private int mTextColorSecondaryInverse;
     private int mColorPrimaryDark;
 
-    public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId, StepChecker checker) {
+    public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker) {
         super(context, dataKey, titleResId, errorResId, detailsResId);
         mChecker = checker;
         mMin = min;
@@ -48,7 +47,7 @@ public class SeekBarStep extends Step {
     }
 
     public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId) {
-        this(context, dataKey, min, max, titleResId, errorResId, detailsResId, new StepChecker() {
+        this(context, dataKey, min, max, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
             @Override
             public void check(int progress, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -56,18 +55,30 @@ public class SeekBarStep extends Step {
         });
     }
 
-    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details, StepChecker checker) {
+    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details, StepCheckerAsync checker) {
         super(context, dataKey, title, error, details);
         mChecker = checker;
         mMin = min;
         mMax = max;
     }
 
-    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details) {
-        this(context, dataKey, min, max, title, error, details, new StepChecker() {
+    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details, final StepChecker checker) {
+        this(context, dataKey, min, max, title, error, details, new StepCheckerAsync() {
             @Override
             public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+                if(checker.check(progress))
                     stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
+        });
+    }
+
+    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details) {
+        this(context, dataKey, min, max, title, error, details, new StepCheckerAsync() {
+            @Override
+            public void check(int progress, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
             }
         });
     }
@@ -137,7 +148,11 @@ public class SeekBarStep extends Step {
         array.recycle();
     }
 
-    public interface StepChecker{
+    public interface StepCheckerAsync {
         void check(int progress, StepCheckerCallback stepCheckerCallback);
+    }
+
+    public interface StepChecker {
+        boolean check(int progress);
     }
 }

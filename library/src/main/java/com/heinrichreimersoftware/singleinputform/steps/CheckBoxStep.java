@@ -31,18 +31,48 @@ public class CheckBoxStep extends Step{
     private int mTextResId;
     private String mText;
 
-    private StepChecker mChecker;
+    private StepCheckerAsync mChecker;
 
     private int mTextColor;
 
-    public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId, StepChecker checker) {
+    public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker) {
         super(context, dataKey, titleResId, errorResId, detailsResId);
         mTextResId = textResId;
         mChecker = checker;
     }
 
+    public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details, StepCheckerAsync checker) {
+        super(context, dataKey, title, error, details);
+        mText = text;
+        mChecker = checker;
+    }
+
+    public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId, final StepChecker checker) {
+        this(context, dataKey, textResId, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
+            @Override
+            public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
+                if(checker.check(checked))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
+        });
+    }
+
+    public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details, final StepChecker checker) {
+        this(context, dataKey, text, title, error, details, new StepCheckerAsync() {
+            @Override
+            public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
+                if(checker.check(checked))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
+        });
+    }
+
     public CheckBoxStep(Context context, String dataKey, int textResId, int titleResId, int errorResId, int detailsResId) {
-        this(context, dataKey, textResId, titleResId, errorResId, detailsResId, new StepChecker() {
+        this(context, dataKey, textResId, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
             @Override
             public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -50,14 +80,8 @@ public class CheckBoxStep extends Step{
         });
     }
 
-    public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details, StepChecker checker) {
-        super(context, dataKey, title, error, details);
-        mText = text;
-        mChecker = checker;
-    }
-
     public CheckBoxStep(Context context, String dataKey, String text, String title, String error, String details) {
-        this(context, dataKey, text, title, error, details, new StepChecker() {
+        this(context, dataKey, text, title, error, details, new StepCheckerAsync() {
             @Override
             public void check(boolean checked, StepCheckerCallback stepCheckerCallback) {
                 stepCheckerCallback.onInputValid();
@@ -134,7 +158,11 @@ public class CheckBoxStep extends Step{
         array.recycle();
     }
 
-    public interface StepChecker{
+    public interface StepCheckerAsync {
         void check(boolean checked, StepCheckerCallback stepCheckerCallback);
+    }
+
+    public interface StepChecker {
+        boolean check(boolean checked);
     }
 }
