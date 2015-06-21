@@ -22,7 +22,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -40,14 +40,13 @@ import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 import com.heinrichreimersoftware.singleinputform.steps.Step;
-import com.heinrichreimersoftware.singleinputform.steps.StepCheckerCallback;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.util.Property;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SingleInputFormActivity extends ActionBarActivity {
+public abstract class SingleInputFormActivity extends AppCompatActivity {
 
 	private static final String KEY_DATA = "key_data";
 	private static final String KEY_STEP_INDEX = "key_step_index";
@@ -378,7 +377,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 	protected void nextStep(){
 		final Step step = getCurrentStep();
 
-		checkStep(new StepCheckerCallback() {
+		checkStep(new Step.StepCheckerCallback() {
 
 			@Override
 			public void onInputValid() {
@@ -408,7 +407,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		});
 	}
 
-	private void checkStep(StepCheckerCallback stepCheckerCallback){
+	private void checkStep(Step.StepCheckerCallback stepCheckerCallback){
 		getCurrentStep().check(stepCheckerCallback);
 	}
 }
