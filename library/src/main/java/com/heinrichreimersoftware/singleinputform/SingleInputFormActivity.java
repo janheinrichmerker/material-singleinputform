@@ -22,7 +22,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -46,7 +46,7 @@ import com.nineoldandroids.util.Property;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SingleInputFormActivity extends ActionBarActivity {
+public abstract class SingleInputFormActivity extends AppCompatActivity {
 
 	private static final String KEY_DATA = "key_data";
 	private static final String KEY_STEP_INDEX = "key_step_index";
@@ -230,12 +230,12 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
         mTitleSwitcher.setInAnimation(getAnimation(R.anim.slide_in_to_bottom, true));
         mTitleSwitcher.setOutAnimation(getAnimation(R.anim.slide_out_to_top, false));
 
-		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
 			@Override
-			public View makeView(){
+			public View makeView() {
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_title, null);
-				if(view != null){
+				if (view != null) {
 					view.setTextColor(mTitleTextColor);
 				}
 				return view;
@@ -278,12 +278,12 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
         mDetailsSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
         mDetailsSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
-		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
 			@Override
-			public View makeView(){
+			public View makeView() {
 				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_details, null);
-				if(view != null && mDetailsTextColor != -1){
+				if (view != null && mDetailsTextColor != -1) {
 					view.setTextColor(mDetailsTextColor);
 				}
 				return view;
@@ -297,7 +297,9 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		if(mStepIndex >= stepsSize()){
 			hideSoftInput();
 			onFormFinished(setupData);
-			finish();
+
+			mStepIndex--;//reset stepIndex to last step
+//			finish(); removed to allow for more actions after last step e.g. async posting to the server
 			return;
 		}
 		updateViews();
@@ -373,27 +375,39 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 	}
 
 	protected void nextStep(){
-		Step step = getCurrentStep();
-		boolean checkStep = checkStep();
-		if(!checkStep){
-			if(!mErrored){
-				mErrored = true;
-				mErrorSwitcher.setText(step.getError());
-			}
-		}
-		else{
-			mErrored = false;
-		}
-		if(mErrored){
-			return;
-		}
-		setupData = step.save(setupData);
+		final Step step = getCurrentStep();
 
-		mStepIndex++;
-		updateStep();
+		checkStep(new Step.StepCheckerCallback() {
+
+			@Override
+			public void onInputValid() {
+				mErrored = false;
+
+				setupData = step.save(setupData);
+
+				mStepIndex++;
+				updateStep();
+			}
+
+			@Override
+			public void onInputInvalid() {
+				if(!mErrored){
+					mErrored = true;
+					mErrorSwitcher.setText(step.getError());
+				}
+			}
+
+			@Override
+			public void onInputInvalid(String error) {
+				if(!mErrored){
+					mErrored = true;
+					mErrorSwitcher.setText(error);
+				}
+			}
+		});
 	}
 
-	private boolean checkStep(){
-		return getCurrentStep().check();
+	private void checkStep(Step.StepCheckerCallback stepCheckerCallback){
+		getCurrentStep().check(stepCheckerCallback);
 	}
 }

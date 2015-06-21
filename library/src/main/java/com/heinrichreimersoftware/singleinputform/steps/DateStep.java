@@ -15,7 +15,7 @@ import com.heinrichreimersoftware.singleinputform.R;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DateStep extends TextStep{
+public class DateStep extends TextStep {
 
 	public static final String DATA_YEAR = "data_year";
 	public static final String DATA_MONTH = "data_month";
@@ -25,14 +25,17 @@ public class DateStep extends TextStep{
 	private int mMonth;
 	private int mDay;
 
-	private StepChecker mChecker;
+	private StepCheckerAsync mChecker;
 
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new TextStep.StepChecker(){
+	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker, TextView.OnEditorActionListener l){
+		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new TextStep.StepCheckerAsync(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
+            public void check(String input, StepCheckerCallback stepCheckerCallback) {
+                if(!TextUtils.isEmpty(input))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
 		}, l);
 
 		mChecker = checker;
@@ -74,32 +77,47 @@ public class DateStep extends TextStep{
 	}
 
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
+		this(context, dataKey, titleResId, errorResId, detailsResId, new StepCheckerAsync(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
 
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker){
-		this(context, dataKey, titleResId, errorResId, detailsResId, checker, null);
-	}
+    public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepCheckerAsync checker){
+        this(context, dataKey, titleResId, errorResId, detailsResId, checker, null);
+    }
+
+    public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, final StepChecker checker){
+        this(context, dataKey, titleResId, errorResId, detailsResId, new StepCheckerAsync() {
+            @Override
+            public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+                if(checker.check(year, month, day))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
+        }, null);
+    }
 
 	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
+		this(context, dataKey, titleResId, errorResId, detailsResId, new StepCheckerAsync(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+					stepCheckerCallback.onInputValid();
 			}
 		}, null);
 	}
 
-	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new TextStep.StepChecker(){
+	public DateStep(Context context, String dataKey, String title, String error, String details, StepCheckerAsync checker, TextView.OnEditorActionListener l){
+		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new TextStep.StepCheckerAsync(){
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
+			public void check(String input, StepCheckerCallback stepCheckerCallback) {
+				if(!TextUtils.isEmpty(input))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputInvalid();
 			}
 		}, l);
 
@@ -112,55 +130,79 @@ public class DateStep extends TextStep{
 
 		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
 
-		setOnClickListener(new View.OnClickListener(){
+		setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v){
+			public void onClick(View v) {
 
-                Calendar initial = new GregorianCalendar();
+				Calendar initial = new GregorianCalendar();
 
-                if(mYear >= 0){
-                    initial.set(Calendar.YEAR, mYear);
-                }
-                if(mMonth >= 0){
-                    initial.set(Calendar.MONTH, mMonth);
-                }
-                if(mDay >= 0){
-                    initial.set(Calendar.DAY_OF_MONTH, mDay);
-                }
+				if (mYear >= 0) {
+					initial.set(Calendar.YEAR, mYear);
+				}
+				if (mMonth >= 0) {
+					initial.set(Calendar.MONTH, mMonth);
+				}
+				if (mDay >= 0) {
+					initial.set(Calendar.DAY_OF_MONTH, mDay);
+				}
 
-                DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
-                        mYear = year;
-                        mMonth = monthOfYear;
-                        mDay = dayOfMonth;
-                        updateText();
-                    }
-                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
+				DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
+						mYear = year;
+						mMonth = monthOfYear;
+						mDay = dayOfMonth;
+						updateText();
+					}
+				}, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
 			}
 		});
 	}
 
-	public DateStep(Context context, String dataKey, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, title, error, details, new StepChecker(){
+    public DateStep(Context context, String dataKey, String title, String error, String details, final StepChecker checker, TextView.OnEditorActionListener l) {
+        this(context, dataKey, title, error, details, new StepCheckerAsync() {
+            @Override
+            public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+                if(checker.check(year, month, day))
+                    stepCheckerCallback.onInputValid();
+                else
+                    stepCheckerCallback.onInputInvalid();
+            }
+        }, l);
+    }
+
+        public DateStep(Context context, String dataKey, String title, String error, String details, TextView.OnEditorActionListener l){
+		this(context, dataKey, title, error, details, new StepCheckerAsync(){
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+				stepCheckerCallback.onInputValid();
 			}
 		}, l);
 	}
 
-	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker){
+	public DateStep(Context context, String dataKey, String title, String error, String details, StepCheckerAsync checker){
 		this(context, dataKey, title, error, details, checker, null);
 	}
 
-	public DateStep(Context context, String dataKey, String title, String error, String details){
-		this(context, dataKey, title, error, details, new StepChecker(){
+	public DateStep(Context context, String dataKey, String title, String error, String details, final StepChecker checker){
+		this(context, dataKey, title, error, details, new StepCheckerAsync() {
 			@Override
-			public boolean check(int year, int month, int day){
-				return true;
+			public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+				if(checker.check(year, month, day))
+					stepCheckerCallback.onInputValid();
+				else
+					stepCheckerCallback.onInputValid();
 			}
-		}, null);
+		});
+	}
+
+	public DateStep(Context context, String dataKey, String title, String error, String details){
+		this(context, dataKey, title, error, details, new StepCheckerAsync() {
+            @Override
+            public void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback) {
+                stepCheckerCallback.onInputValid();
+            }
+        }, null);
 	}
 
 	public static int year(Bundle data, String dataKey){
@@ -205,8 +247,8 @@ public class DateStep extends TextStep{
 	}
 
 	@Override
-	public boolean check(){
-		return mChecker.check(mYear, mMonth, mDay);
+	public void check(StepCheckerCallback stepCheckerCallback) {
+		mChecker.check(mYear, mMonth, mDay, stepCheckerCallback);
 	}
 
 	@Override
@@ -224,7 +266,11 @@ public class DateStep extends TextStep{
 		updateText();
 	}
 
-	public interface StepChecker{
+	public interface StepCheckerAsync {
+		void check(int year, int month, int day, StepCheckerCallback stepCheckerCallback);
+	}
+
+	public interface StepChecker {
 		boolean check(int year, int month, int day);
 	}
 }

@@ -16,6 +16,7 @@
 
 package com.heinrichreimersoftware.singleinputform.example;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
@@ -43,6 +44,19 @@ public class MainActivity extends SingleInputFormActivity{
 	private static final String DATA_KEY_BIRTHDAY = "birthday";
 	private static final String DATA_KEY_CITY = "city";
 
+	private ProgressDialog mProgressDialog;
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        //lets clean up the dialog. No need for fancy lifecycle handling in the demo
+        if(mProgressDialog != null && mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
+
+        mProgressDialog = null;
+    }
+
 	@Override
 	protected List<Step> getSteps(Context context){
 		List<Step> steps = new ArrayList<Step>();
@@ -55,10 +69,37 @@ public class MainActivity extends SingleInputFormActivity{
                 })
         );
         steps.add(
-                new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepChecker() {
+                new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepCheckerAsync() {
                     @Override
-                    public boolean check(String input) {
-                        return android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches();
+                    public void check(String input, final Step.StepCheckerCallback stepCheckerCallback) {
+						if(android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
+                            mProgressDialog = ProgressDialog.show(MainActivity.this, "Validating", "Checking if email is unique on the server...", true, false);
+
+                            //lets simulate a long running process
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+
+                                    }
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run()
+                                        {
+                                            mProgressDialog.dismiss();
+                                            mProgressDialog = null;
+                                            stepCheckerCallback.onInputValid();
+                                        }
+                                    });
+                                }
+                            }).start();
+                        }
+						else
+							stepCheckerCallback.onInputInvalid();
                     }
                 })
         );
@@ -73,19 +114,23 @@ public class MainActivity extends SingleInputFormActivity{
 		steps.add(
 				new DateStep(context, DATA_KEY_BIRTHDAY, R.string.birthday, R.string.birthday_error, R.string.birthday_details, new DateStep.StepChecker(){
 					@Override
-					public boolean check(int year, int month, int day){
+					public boolean check(int year, int month, int day) {
 						Calendar today = new GregorianCalendar();
 						Calendar birthday = new GregorianCalendar(year, month, day);
 						today.add(Calendar.YEAR, -14);
+
 						return today.after(birthday);
 					}
 				})
 		);
 		steps.add(
-				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepChecker() {
+				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepCheckerAsync() {
 					@Override
-					public boolean check(int progress) {
-						return progress >= 160;
+					public void check(int progress, Step.StepCheckerCallback stepCheckerCallback) {
+						if(progress >= 160)
+							stepCheckerCallback.onInputValid();
+						else
+							stepCheckerCallback.onInputInvalid();
 					}
 				})
 		);
