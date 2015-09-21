@@ -1,15 +1,20 @@
 apply plugin: 'com.android.application'
 
+def versionMajor = 2
+def versionMinor = 1
+def versionPatch = 0
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
 android {
-	compileSdkVersion 22
-	buildToolsVersion "20.0.0"
+	compileSdkVersion 23
+	buildToolsVersion "23.0.0"
 
 	defaultConfig {
 		applicationId "com.heinrichreimersoftware.singleinputform.example"
 		minSdkVersion 9
-		targetSdkVersion 22
-		versionCode 3
-		versionName "2.0.1"
+		targetSdkVersion 23
+		versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+		versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 	}
 	buildTypes {
 		release {
@@ -21,5 +26,5 @@ android {
 
 dependencies {
 	compile project(':library')
-	compile 'com.android.support:appcompat-v7:22.0.0'
+	compile 'com.android.support:appcompat-v7:23.0.1'
 }

@@ -1,1 +1,1 @@
-include ':library', ':example', ':discreteseekbar'
+include ':library', ':example'

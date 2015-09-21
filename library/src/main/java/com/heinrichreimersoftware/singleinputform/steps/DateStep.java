@@ -1,5 +1,6 @@
 package com.heinrichreimersoftware.singleinputform.steps;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -7,9 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.heinrichreimersoftware.singleinputform.R;
 
 import java.util.Calendar;
@@ -37,8 +38,7 @@ public class DateStep extends TextStep{
 
 		mChecker = checker;
 
-		if(context instanceof FragmentActivity){}
-		else{
+		if(!(context instanceof FragmentActivity)){
 			throw new ClassCastException("context has to implement FragmentActivity");
 		}
 
@@ -60,15 +60,15 @@ public class DateStep extends TextStep{
                     initial.set(Calendar.DAY_OF_MONTH, mDay);
                 }
 
-				DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+				new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
+                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
                         mYear = year;
                         mMonth = monthOfYear;
                         mDay = dayOfMonth;
                         updateText();
                     }
-                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
+                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH)).show();
 			}
 		});
 	}
@@ -105,8 +105,7 @@ public class DateStep extends TextStep{
 
 		mChecker = checker;
 
-		if(context instanceof FragmentActivity){}
-		else{
+		if(!(context instanceof FragmentActivity)){
 			throw new ClassCastException("context has to implement FragmentActivity");
 		}
 
@@ -128,15 +127,15 @@ public class DateStep extends TextStep{
                     initial.set(Calendar.DAY_OF_MONTH, mDay);
                 }
 
-                DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePickerDialog datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
+                    public void onDateSet(DatePicker datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
                         mYear = year;
                         mMonth = monthOfYear;
                         mDay = dayOfMonth;
                         updateText();
                     }
-                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH), false).show(fragmentManager, "DateStep");
+                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH)).show();
 			}
 		});
 	}
