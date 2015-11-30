@@ -18,9 +18,7 @@ package com.heinrichreimersoftware.singleinputform.steps;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.heinrichreimersoftware.singleinputform.R;
@@ -28,47 +26,27 @@ import com.heinrichreimersoftware.singleinputform.R;
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 
 public class SeekBarStep extends Step {
+
     public static final String DATA_PROGRESS = "data_progress";
 
-    private StepChecker mChecker;
+    private Validator validator;
 
-    private int mMin;
-    private int mMax;
+    private int min;
+    private int max;
 
-    private int mTextColorPrimaryInverse;
-    private int mTextColorSecondaryInverse;
-    private int mColorPrimaryDark;
+    private int textColorPrimaryInverse;
+    private int textColorSecondaryInverse;
+    private int colorPrimaryDark;
 
-    public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId, StepChecker checker) {
-        super(context, dataKey, titleResId, errorResId, detailsResId);
-        mChecker = checker;
-        mMin = min;
-        mMax = max;
-    }
+    protected SeekBarStep(Builder builder) {
+        super(builder);
 
-    public SeekBarStep(Context context, String dataKey, int min, int max, int titleResId, int errorResId, int detailsResId) {
-        this(context, dataKey, min, max, titleResId, errorResId, detailsResId, new StepChecker() {
-            @Override
-            public boolean check(int progress) {
-                return true;
-            }
-        });
-    }
-
-    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details, StepChecker checker) {
-        super(context, dataKey, title, error, details);
-        mChecker = checker;
-        mMin = min;
-        mMax = max;
-    }
-
-    public SeekBarStep(Context context, String dataKey, int min, int max, String title, String error, String details) {
-        this(context, dataKey, min, max, title, error, details, new StepChecker() {
-            @Override
-            public boolean check(int progress) {
-                return true;
-            }
-        });
+        validator = builder.validator;
+        min = builder.min;
+        max = builder.max;
+        textColorPrimaryInverse = builder.textColorPrimaryInverse;
+        textColorSecondaryInverse = builder.textColorSecondaryInverse;
+        colorPrimaryDark = builder.colorPrimaryDark;
     }
 
     public static int progress(Bundle data, String dataKey){
@@ -83,19 +61,17 @@ public class SeekBarStep extends Step {
     }
 
     @Override
-    public DiscreteSeekBar onCreateView() {
-        loadTheme();
-
-        return  (DiscreteSeekBar) View.inflate(getContext(), R.layout.view_seek_bar, null);
+    public DiscreteSeekBar onCreateView(Context context) {
+        return  (DiscreteSeekBar) View.inflate(context, R.layout.view_seek_bar, null);
     }
 
     @Override
     public void updateView(boolean lastStep) {
-        getView().setMin(mMin);
-        getView().setMax(mMax);
-        getView().setThumbColor(mTextColorPrimaryInverse, mColorPrimaryDark);
-        getView().setScrubberColor(mTextColorPrimaryInverse);
-        getView().setTrackColor(mTextColorSecondaryInverse);
+        getView().setMin(min);
+        getView().setMax(max);
+        getView().setThumbColor(textColorPrimaryInverse, colorPrimaryDark);
+        getView().setScrubberColor(textColorPrimaryInverse);
+        getView().setTrackColor(textColorSecondaryInverse);
     }
 
     @Override
@@ -103,40 +79,127 @@ public class SeekBarStep extends Step {
         if(super.getView() instanceof DiscreteSeekBar){
             return (DiscreteSeekBar) super.getView();
         }
-        throw new ClassCastException("Input view must be RangeBar");
+        throw new ClassCastException("View view must be DiscreteSeekBar.");
     }
 
     @Override
-    public boolean check() {
-        return mChecker.check(getView().getProgress());
+    public boolean validate() {
+        return validator.validate(getView().getProgress());
     }
 
     @Override
     protected void onSave() {
         data().putInt(DATA_PROGRESS, getView().getProgress());
-        Log.d("SeekBarStep", "onSave() DATA_PROGRESS: " + data().getInt(DATA_PROGRESS));
     }
 
     @Override
     protected void onRestore() {
-        Log.d("SeekBarStep", "onRestore() DATA_PROGRESS: " + data().getInt(DATA_PROGRESS));
         getView().setProgress(data().getInt(DATA_PROGRESS));
     }
 
-    private void loadTheme(){
-		/* Custom values */
-
-        int[] attrs = {android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondaryInverse, R.attr.colorPrimaryDark};
-        TypedArray array = getContext().obtainStyledAttributes(attrs);
-
-        mTextColorPrimaryInverse = array.getColor(0, 0);
-        mTextColorSecondaryInverse = array.getColor(1, 0);
-        mColorPrimaryDark = array.getColor(2, 0);
-
-        array.recycle();
+    public static class Validator {
+        public boolean validate(int progress){
+            return true;
+        }
     }
 
-    public interface StepChecker{
-        boolean check(int progress);
+    public static class Builder extends Step.Builder{
+
+        protected Validator validator;
+        protected int min;
+        protected int max;
+        protected int textColorPrimaryInverse;
+        protected int textColorSecondaryInverse;
+        protected int colorPrimaryDark;
+
+        public Builder(Context context, String key) {
+            super(context, key);
+            loadTheme();
+            validator = new Validator();
+        }
+
+        public Validator validator() {
+            return validator;
+        }
+        public Builder validator(Validator validator) {
+            this.validator = validator;
+            return this;
+        }
+
+        public int min() {
+            return min;
+        }
+        public Builder min(int min) {
+            this.min = min;
+            return this;
+        }
+
+        public int max() {
+            return max;
+        }
+        public Builder max(int max) {
+            this.max = max;
+            return this;
+        }
+
+        public int textColorPrimaryInverse() {
+            return textColorPrimaryInverse;
+        }
+        public Builder textColorPrimaryInverse(int textColorPrimaryInverse) {
+            this.textColorPrimaryInverse = textColorPrimaryInverse;
+            return this;
+        }
+
+        public int textColorSecondaryInverse() {
+            return textColorSecondaryInverse;
+        }
+        public Builder textColorSecondaryInverse(int textColorSecondaryInverse) {
+            this.textColorSecondaryInverse = textColorSecondaryInverse;
+            return this;
+        }
+
+        public int colorPrimaryDark() {
+            return colorPrimaryDark;
+        }
+        public Builder colorPrimaryDark(int colorPrimaryDark) {
+            this.colorPrimaryDark = colorPrimaryDark;
+            return this;
+        }
+
+        private void loadTheme(){
+            int[] attrs = {android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondaryInverse, R.attr.colorPrimaryDark};
+            TypedArray array = context.obtainStyledAttributes(attrs);
+
+            textColorPrimaryInverse = array.getColor(0, 0);
+            textColorSecondaryInverse = array.getColor(1, 0);
+            colorPrimaryDark = array.getColor(2, 0);
+
+            array.recycle();
+        }
+
+        @Override
+        public Step build() {
+            return new SeekBarStep(this);
+        }
+
+        /* Casted parent methods */
+        public Builder title(String title) {
+            return (Builder) super.title(title);
+        }
+        public Builder titleResId(int titleResId) {
+            return (Builder) super.titleResId(titleResId);
+        }
+        public Builder error(String error) {
+            return (Builder) super.error(error);
+        }
+        public Builder errorResId(int errorResId) {
+            return (Builder) super.errorResId(errorResId);
+        }
+        public Builder details(String details) {
+            return (Builder) super.details(details);
+        }
+        public Builder detailsResId(int detailsResId) {
+            return (Builder) super.detailsResId(detailsResId);
+        }
     }
 }

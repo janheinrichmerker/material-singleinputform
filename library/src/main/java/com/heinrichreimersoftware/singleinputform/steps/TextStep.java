@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -30,68 +29,21 @@ import android.widget.TextView;
 import com.heinrichreimersoftware.singleinputform.R;
 
 public class TextStep extends Step{
+
 	public static final String DATA_TEXT = "data_text";
-	private int mInputType;
-	private StepChecker mChecker;
 
-	private int mEditTextColor;
+	private int inputType;
+	private Validator validator;
+	private TextView.OnEditorActionListener textWatcher;
+	private int textColor;
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, titleResId, errorResId, detailsResId);
-		mInputType = inputType;
-		mChecker = checker;
-		getView().setOnEditorActionListener(l);
-	}
+	protected TextStep(Builder builder){
+		super(builder);
 
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, l);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId, StepChecker checker){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, checker, null);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, inputType, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, null);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, title, error, details);
-		mInputType = inputType;
-		mChecker = checker;
-		getView().setOnEditorActionListener(l);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, l);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details, StepChecker checker){
-		this(context, dataKey, inputType, title, error, details, checker, null);
-	}
-
-	public TextStep(Context context, String dataKey, int inputType, String title, String error, String details){
-		this(context, dataKey, inputType, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return true;
-			}
-		}, null);
+		inputType = builder.inputType;
+		validator = builder.validator;
+		textWatcher = builder.textWatcher;
+		textColor = builder.textColor;
 	}
 
 	public static String text(Bundle data, String dataKey){
@@ -106,51 +58,45 @@ public class TextStep extends Step{
 	}
 
 	@Override
-	public View onCreateView(){
-		loadTheme();
-
-		EditText editText = (EditText) View.inflate(getContext(), R.layout.view_input, null);
-		editText.setTextColor(mEditTextColor);
-
-		return editText;
+	public View onCreateView(Context context){
+        return View.inflate(context, R.layout.view_input, null);
 	}
 
 	@Override
 	public void updateView(boolean lastStep){
-		Log.d("sif", "updateView(" + lastStep + ")");
 		if(lastStep){
 			setImeOptions(EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 		}
 		else{
 			setImeOptions(EditorInfo.IME_ACTION_NEXT | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 		}
-		getView().setInputType(mInputType);
-		if(mInputType == InputType.TYPE_NULL){
+		getView().setInputType(inputType);
+		if(inputType == InputType.TYPE_NULL){
 			hideSoftInput();
-			Log.d("sif", "hideSoftInput()");
 		}
 		else{
 			showSoftInput();
-			Log.d("sif", "showSoftInput()");
 		}
+        getView().setTextColor(textColor);
+        getView().setOnEditorActionListener(textWatcher);
 	}
 
 	@Override
-	public TextView getView(){
-		if(super.getView() instanceof TextView){
-			return (TextView) super.getView();
+	public EditText getView(){
+		if(super.getView() instanceof EditText){
+			return (EditText) super.getView();
 		}
-		throw new ClassCastException("Input view must be TextView");
+		throw new ClassCastException("View view must be EditText.");
 	}
 
 	@Override
-	public boolean check(){
+	public boolean validate(){
 		String inputString = "";
 		CharSequence inputText = getView().getText();
 		if(inputText != null){
 			inputString = inputText.toString();
 		}
-		return mChecker.check(inputString);
+		return validator.validate(inputString);
 	}
 
 	@Override
@@ -182,7 +128,7 @@ public class TextStep extends Step{
 	}
 
 	private void hideSoftInput(){
-		Context context = getContext();
+		Context context = getView().getContext();
 		if(context != null){
 			InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
@@ -190,7 +136,7 @@ public class TextStep extends Step{
 	}
 
 	private void showSoftInput(){
-		Context context = getContext();
+		Context context = getView().getContext();
 		if(context != null){
 			InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 			getView().requestFocus();
@@ -202,17 +148,88 @@ public class TextStep extends Step{
 		getView().setOnClickListener(l);
 	}
 
-	private void loadTheme(){
-		/* Custom values */
-        int[] attrs = {android.R.attr.textColorPrimaryInverse};
-        TypedArray array = getContext().obtainStyledAttributes(attrs);
-
-        mEditTextColor = array.getColor(0, 0);
-
-        array.recycle();
+	public static class Validator {
+		public boolean validate(String input){
+			return true;
+		}
 	}
 
-	public interface StepChecker{
-		boolean check(String input);
+	public static class Builder extends Step.Builder{
+		protected int inputType;
+		protected Validator validator;
+		protected TextView.OnEditorActionListener textWatcher;
+		protected int textColor;
+
+		public Builder(Context context, String key) {
+			super(context, key);
+			loadTheme();
+			validator = new Validator();
+		}
+
+		public int inputType() {
+			return inputType;
+		}
+		public Builder inputType(int inputType) {
+			this.inputType = inputType;
+			return this;
+		}
+
+		public Validator validator() {
+			return validator;
+		}
+		public Builder validator(Validator validator) {
+			this.validator = validator;
+			return this;
+		}
+
+		public TextView.OnEditorActionListener textWatcher() {
+			return textWatcher;
+		}
+		public Builder textWatcher(TextView.OnEditorActionListener textWatcher) {
+			this.textWatcher = textWatcher;
+			return this;
+		}
+
+		public int textColor() {
+			return textColor;
+		}
+		public Builder textColor(int textColor) {
+			this.textColor = textColor;
+			return this;
+		}
+
+		private void loadTheme(){
+			int[] attrs = {android.R.attr.textColorPrimaryInverse};
+			TypedArray array = context.obtainStyledAttributes(attrs);
+
+            textColor = array.getColor(0, 0);
+
+			array.recycle();
+		}
+
+		@Override
+		public Step build() {
+			return new TextStep(this);
+		}
+
+		/* Casted parent methods */
+		public Builder title(String title) {
+			return (Builder) super.title(title);
+		}
+		public Builder titleResId(int titleResId) {
+			return (Builder) super.titleResId(titleResId);
+		}
+		public Builder error(String error) {
+			return (Builder) super.error(error);
+		}
+		public Builder errorResId(int errorResId) {
+			return (Builder) super.errorResId(errorResId);
+		}
+		public Builder details(String details) {
+			return (Builder) super.details(details);
+		}
+		public Builder detailsResId(int detailsResId) {
+			return (Builder) super.detailsResId(detailsResId);
+		}
 	}
 }

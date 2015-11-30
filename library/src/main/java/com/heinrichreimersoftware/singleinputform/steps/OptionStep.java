@@ -20,8 +20,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,149 +27,41 @@ public class OptionStep extends TextStep{
 
 	public static final String DATA_SELECTED_OPTION = "data_selected_option";
 
-	private String[] mOptions;
-	private int mSelectedItemPos = -1;
+	private String[] options;
+	private int optionsResId;
+	private int selectedOption = -1;
 
-	public OptionStep(final Context context, String dataKey, final String[] options, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
+    protected OptionStep(Builder builder){
+		super(builder);
 
-		mOptions = options;
+		options = builder.options;
+		optionsResId = builder.optionsResId;
+		selectedOption = builder.selectedOption;
 
 		setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View v){
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle(titleResId)
-						.setItems(mOptions, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								mSelectedItemPos = which;
-								updateText();
-							}
-						});
-				builder.show();
+				AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(v.getContext());
+				dialogBuilder.setTitle(getTitle(v.getContext()));
+				if(optionsResId != 0){
+					dialogBuilder.setItems(optionsResId, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							selectedOption = which;
+							updateText();
+						}
+					});
+				}
+				else{
+					dialogBuilder.setItems(options, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							selectedOption = which;
+							updateText();
+						}
+					});
+				}
+				dialogBuilder.show();
 			}
 		});
-	}
-
-	public OptionStep(Context context, String dataKey, String[] options, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, options, titleResId, errorResId, detailsResId, null);
-	}
-
-	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
-
-		String[] options = new String[optionsResIds.length];
-		for(int i = 0; i < optionsResIds.length; i++){
-			String option = context.getString(optionsResIds[i]);
-			if(option != null){
-				options[i] = option;
-			}
-			else{
-				options[i] = "";
-			}
-		}
-
-		mOptions = options;
-
-		setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle(titleResId)
-						.setItems(mOptions, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						mSelectedItemPos = which;
-						updateText();
-					}
-				})
-						.show();
-			}
-		});
-	}
-
-	public OptionStep(Context context, String dataKey, int[] optionsResIds, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, optionsResIds, titleResId, errorResId, detailsResId, null);
-	}
-
-	public OptionStep(final Context context, String dataKey, final String[] options, final String title, String error, String details, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
-
-		mOptions = options;
-
-		setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle(title)
-						.setItems(mOptions, new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								mSelectedItemPos = which;
-								updateText();
-							}
-						});
-				builder.show();
-			}
-		});
-	}
-
-	public OptionStep(Context context, String dataKey, String[] options, String title, String error, String details){
-		this(context, dataKey, options, title, error, details, null);
-	}
-
-	public OptionStep(final Context context, String dataKey, int[] optionsResIds, final String title, String error, String details, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
-
-		String[] options = new String[optionsResIds.length];
-		for(int i = 0; i < optionsResIds.length; i++){
-			String option = context.getString(optionsResIds[i]);
-			if(option != null){
-				options[i] = option;
-			}
-			else{
-				options[i] = "";
-			}
-		}
-
-		mOptions = options;
-
-		setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				AlertDialog.Builder builder = new AlertDialog.Builder(context);
-				builder.setTitle(title)
-						.setItems(mOptions, new DialogInterface.OnClickListener(){
-							public void onClick(DialogInterface dialog, int which){
-								mSelectedItemPos = which;
-								updateText();
-							}
-						})
-						.show();
-			}
-		});
-	}
-
-	public OptionStep(Context context, String dataKey, int[] optionsResIds, String title, String error, String details){
-		this(context, dataKey, optionsResIds, title, error, details, null);
 	}
 
 	public static int selectedOption(Bundle data, String dataKey){
@@ -186,23 +76,94 @@ public class OptionStep extends TextStep{
 	}
 
 	private void updateText(){
-		if(mSelectedItemPos >= 0 && mSelectedItemPos < mOptions.length){
-			setText(mOptions[mSelectedItemPos]);
+		if(selectedOption >= 0 && selectedOption < options.length){
+			setText(options[selectedOption]);
 		}
 	}
 
 
 	@Override
 	protected void onSave(){
-		data().putInt(DATA_SELECTED_OPTION, mSelectedItemPos);
+		data().putInt(DATA_SELECTED_OPTION, selectedOption);
 	}
 
 	@Override
 	protected void onRestore(){
-		int selectedItemPos = data().getInt(DATA_SELECTED_OPTION, -1);
-		if(selectedItemPos >= 0){
-			mSelectedItemPos = selectedItemPos;
+		int selectedOption = data().getInt(DATA_SELECTED_OPTION, -1);
+		if(selectedOption >= 0){
+			this.selectedOption = selectedOption;
 			updateText();
 		}
+	}
+
+	public static class Builder extends TextStep.Builder{
+
+		protected String[] options;
+		protected int optionsResId;
+		protected int selectedOption = -1;
+
+		public Builder(Context context, String key) {
+			super(context, key);
+		}
+
+		public String[] options() {
+			return options;
+		}
+		public Builder options(String[] options) {
+			this.options = options;
+			return this;
+		}
+		public int optionsResId() {
+			return optionsResId;
+		}
+		public Builder optionsResId(int optionsResId) {
+			this.optionsResId = optionsResId;
+			return this;
+		}
+
+		public int selectedOption() {
+			return selectedOption;
+		}
+		public Builder selectedOption(int selectedOption) {
+			this.selectedOption = selectedOption;
+			return this;
+		}
+
+		@Override
+		public Step build() {
+			return new OptionStep(this);
+		}
+
+        /* Casted parent methods */
+        public Builder title(String title) {
+            return (Builder) super.title(title);
+        }
+        public Builder titleResId(int titleResId) {
+            return (Builder) super.titleResId(titleResId);
+        }
+        public Builder error(String error) {
+            return (Builder) super.error(error);
+        }
+        public Builder errorResId(int errorResId) {
+            return (Builder) super.errorResId(errorResId);
+        }
+        public Builder details(String details) {
+            return (Builder) super.details(details);
+        }
+        public Builder detailsResId(int detailsResId) {
+            return (Builder) super.detailsResId(detailsResId);
+        }
+        public Builder inputType(int inputType) {
+            return (Builder) super.inputType(inputType);
+        }
+        public Builder validator(Validator validator) {
+            return (Builder) super.validator(validator);
+        }
+        public Builder textWatcher(TextView.OnEditorActionListener textWatcher) {
+            return (Builder) super.textWatcher(textWatcher);
+        }
+        public Builder textColor(int textColor) {
+            return (Builder) super.textColor(textColor);
+        }
 	}
 }

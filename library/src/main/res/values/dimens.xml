@@ -16,14 +16,14 @@
   -->
 
 <resources>
-    <dimen name="keyline">16dp</dimen>
-    <dimen name="keyline_card">8dp</dimen>
+    <dimen name="baseline">16dp</dimen>
+    <dimen name="baseline_card">8dp</dimen>
 
-    <dimen name="elevation_card">8dp</dimen>
+    <dimen name="margin_card">4dp</dimen>
+    <dimen name="elevation_card">4dp</dimen>
 
     <dimen name="icon_margin">8dp</dimen>
 
-	<!-- Setup -->
 	<dimen name="setup_progressbar_height">4dp</dimen>
 	<!-- Should never be more than (setup_progressbar_height / 2) -->
 	<dimen name="setup_textfield_corner_radius">2dp</dimen>

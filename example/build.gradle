@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
-def versionMajor = 2
-def versionMinor = 1
+def versionMajor = 3
+def versionMinor = 0
 def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
 	compileSdkVersion 23
-	buildToolsVersion "23.0.0"
+	buildToolsVersion "23.0.1"
 
 	defaultConfig {
 		applicationId "com.heinrichreimersoftware.singleinputform.example"
@@ -26,5 +26,5 @@ android {
 
 dependencies {
 	compile project(':library')
-	compile 'com.android.support:appcompat-v7:23.0.1'
+	compile 'com.android.support:appcompat-v7:23.1.1'
 }

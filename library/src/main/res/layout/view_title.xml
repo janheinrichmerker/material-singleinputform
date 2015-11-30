@@ -23,7 +23,7 @@
     android:textColor="?android:attr/textColorPrimary"
     android:fontFamily="sans-serif-light"
 	android:gravity="start"
-	android:paddingTop="@dimen/keyline"
-    android:paddingLeft="@dimen/keyline"
-    android:paddingRight="@dimen/keyline"
+	android:paddingTop="@dimen/baseline"
+    android:paddingLeft="@dimen/baseline"
+    android:paddingRight="@dimen/baseline"
 	android:singleLine="true"/>

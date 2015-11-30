@@ -3,16 +3,12 @@ package com.heinrichreimersoftware.singleinputform.steps;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-import com.heinrichreimersoftware.singleinputform.R;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -22,144 +18,44 @@ public class DateStep extends TextStep{
 	public static final String DATA_MONTH = "data_month";
 	public static final String DATA_DAY = "data_day";
 
-	private int mYear;
-	private int mMonth;
-	private int mDay;
+	private int year;
+	private int month;
+	private int day;
+	private Validator validator;
 
-	private StepChecker mChecker;
+    protected DateStep(Builder builder){
+		super(builder);
 
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, titleResId, errorResId, detailsResId, new TextStep.StepChecker(){
+		year = builder.year;
+		month = builder.month;
+		day = builder.day;
+		validator = builder.validator;
+
+		setOnClickListener(new View.OnClickListener() {
 			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
+			public void onClick(View v) {
 
-		mChecker = checker;
+				Calendar initial = new GregorianCalendar();
 
-		if(!(context instanceof FragmentActivity)){
-			throw new ClassCastException("context has to implement FragmentActivity");
-		}
+				if (year >= 0)
+					initial.set(Calendar.YEAR, year);
+				if (month >= 0)
+					initial.set(Calendar.MONTH, month);
+				if (day >= 0)
+					initial.set(Calendar.DAY_OF_MONTH, day);
 
-		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
 
-		setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-
-                Calendar initial = new GregorianCalendar();
-
-                if(mYear >= 0){
-                    initial.set(Calendar.YEAR, mYear);
-                }
-                if(mMonth >= 0){
-                    initial.set(Calendar.MONTH, mMonth);
-                }
-                if(mDay >= 0){
-                    initial.set(Calendar.DAY_OF_MONTH, mDay);
-                }
-
-				new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                        mYear = year;
-                        mMonth = monthOfYear;
-                        mDay = dayOfMonth;
-                        updateText();
-                    }
-                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH)).show();
+				new DatePickerDialog(getView().getContext(), new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+						DateStep.this.year = year;
+						DateStep.this.month = month;
+						DateStep.this.day = day;
+						updateText();
+					}
+				}, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH)).show();
 			}
 		});
-	}
-
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, TextView.OnEditorActionListener l){
-		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(int year, int month, int day){
-				return true;
-			}
-		}, l);
-	}
-
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId, StepChecker checker){
-		this(context, dataKey, titleResId, errorResId, detailsResId, checker, null);
-	}
-
-	public DateStep(Context context, String dataKey, int titleResId, int errorResId, int detailsResId){
-		this(context, dataKey, titleResId, errorResId, detailsResId, new StepChecker(){
-			@Override
-			public boolean check(int year, int month, int day){
-				return true;
-			}
-		}, null);
-	}
-
-	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker, TextView.OnEditorActionListener l){
-		super(context, dataKey, InputType.TYPE_NULL, title, error, details, new TextStep.StepChecker(){
-			@Override
-			public boolean check(String input){
-				return !TextUtils.isEmpty(input);
-			}
-		}, l);
-
-		mChecker = checker;
-
-		if(!(context instanceof FragmentActivity)){
-			throw new ClassCastException("context has to implement FragmentActivity");
-		}
-
-		final FragmentManager fragmentManager = ((FragmentActivity)context).getSupportFragmentManager();
-
-		setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-
-                Calendar initial = new GregorianCalendar();
-
-                if(mYear >= 0){
-                    initial.set(Calendar.YEAR, mYear);
-                }
-                if(mMonth >= 0){
-                    initial.set(Calendar.MONTH, mMonth);
-                }
-                if(mDay >= 0){
-                    initial.set(Calendar.DAY_OF_MONTH, mDay);
-                }
-
-                new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePickerDialog, int year, int monthOfYear, int dayOfMonth) {
-                        mYear = year;
-                        mMonth = monthOfYear;
-                        mDay = dayOfMonth;
-                        updateText();
-                    }
-                }, initial.get(Calendar.YEAR), initial.get(Calendar.MONTH), initial.get(Calendar.DAY_OF_MONTH)).show();
-			}
-		});
-	}
-
-	public DateStep(Context context, String dataKey, String title, String error, String details, TextView.OnEditorActionListener l){
-		this(context, dataKey, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(int year, int month, int day){
-				return true;
-			}
-		}, l);
-	}
-
-	public DateStep(Context context, String dataKey, String title, String error, String details, StepChecker checker){
-		this(context, dataKey, title, error, details, checker, null);
-	}
-
-	public DateStep(Context context, String dataKey, String title, String error, String details){
-		this(context, dataKey, title, error, details, new StepChecker(){
-			@Override
-			public boolean check(int year, int month, int day){
-				return true;
-			}
-		}, null);
 	}
 
 	public static int year(Bundle data, String dataKey){
@@ -197,33 +93,120 @@ public class DateStep extends TextStep{
 
 	private void updateText(){
 		String output = "";
-		if(mYear >= 0 && mMonth >= 0 && mDay >= 0){
-			output = getContext().getString(R.string.date_format, mYear, mMonth + 1, mDay);
+		if(year >= 0 && month >= 0 && day >= 0){
+			DateFormat format = SimpleDateFormat.getDateInstance();
+			output = format.format(new GregorianCalendar(year, month, day).getTime());
 		}
 		setText(output);
 	}
 
 	@Override
-	public boolean check(){
-		return mChecker.check(mYear, mMonth, mDay);
+	public boolean validate(){
+		return validator.validate(year, month, day);
 	}
 
 	@Override
 	protected void onSave(){
-		data().putInt(DATA_YEAR, mYear);
-		data().putInt(DATA_MONTH, mMonth);
-		data().putInt(DATA_DAY, mDay);
+		data().putInt(DATA_YEAR, year);
+		data().putInt(DATA_MONTH, month);
+		data().putInt(DATA_DAY, day);
 	}
 
 	@Override
 	protected void onRestore(){
-		mYear = data().getInt(DATA_YEAR, -1);
-		mMonth = data().getInt(DATA_MONTH, -1);
-		mDay = data().getInt(DATA_DAY, -1);
+		year = data().getInt(DATA_YEAR, -1);
+		month = data().getInt(DATA_MONTH, -1);
+		day = data().getInt(DATA_DAY, -1);
 		updateText();
 	}
 
-	public interface StepChecker{
-		boolean check(int year, int month, int day);
+	public static class Validator extends TextStep.Validator {
+		public boolean validate(int year, int month, int day){
+			return true;
+		}
+
+		@Override
+		public final boolean validate(String input){
+			return true;
+		}
+	}
+
+	public static class Builder extends TextStep.Builder{
+
+		protected int year;
+		protected int month;
+		protected int day;
+		protected Validator validator;
+
+		public Builder(Context context, String key) {
+			super(context, key);
+			validator = new Validator();
+		}
+
+		public int year() {
+			return year;
+		}
+		public Builder year(int year) {
+			this.year = year;
+			return this;
+		}
+
+		public int month() {
+			return month;
+		}
+		public Builder month(int month) {
+			this.month = month;
+			return this;
+		}
+
+		public int day() {
+			return day;
+		}
+		public Builder day(int day) {
+			this.day = day;
+			return this;
+		}
+
+		public Validator validator() {
+			return validator;
+		}
+		public Builder validator(Validator validator) {
+			this.validator = validator;
+			return this;
+		}
+
+		@Override
+		public Step build() {
+			return new DateStep(this);
+		}
+
+        /* Casted parent methods */
+        public Builder title(String title) {
+            return (Builder) super.title(title);
+        }
+        public Builder titleResId(int titleResId) {
+            return (Builder) super.titleResId(titleResId);
+        }
+        public Builder error(String error) {
+            return (Builder) super.error(error);
+        }
+        public Builder errorResId(int errorResId) {
+            return (Builder) super.errorResId(errorResId);
+        }
+        public Builder details(String details) {
+            return (Builder) super.details(details);
+        }
+        public Builder detailsResId(int detailsResId) {
+            return (Builder) super.detailsResId(detailsResId);
+        }
+        public Builder inputType(int inputType) {
+            return (Builder) super.inputType(inputType);
+        }
+        public Builder textWatcher(TextView.OnEditorActionListener textWatcher) {
+            return (Builder) super.textWatcher(textWatcher);
+        }
+        public Builder textColor(int textColor) {
+            return (Builder) super.textColor(textColor);
+        }
 	}
 }

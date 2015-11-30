@@ -15,103 +15,113 @@
   ~ limitations under the License.
   -->
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:id="@+id/container_scroll_view"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:clipToPadding="false"
-	android:scrollbarStyle="outsideOverlay">
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
-
-		<TextSwitcher
-			android:id="@+id/title_switcher"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/text_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/keyline_card"
-            android:background="?attr/colorPrimary"
-            app:cardUseCompatPadding="true"
-            app:cardCornerRadius="@dimen/setup_textfield_corner_radius"
-            app:cardElevation="@dimen/elevation_card">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <ViewAnimator
-                        android:id="@+id/input_switcher"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="bottom"/>
-
-                    <ImageButton
-                        android:id="@+id/next_button"
-                        android:layout_gravity="center_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/icon_margin"
-                        android:gravity="center"
-                        android:src="@drawable/ic_action_next_item"
-                        android:background="@drawable/selector"
-                        android:contentDescription="@string/next_step"/>
-
-                </LinearLayout>
-
-                <ProgressBar
-                    android:id="@+id/progressbar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:progressDrawable="@drawable/progress_single_input_form"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/setup_progressbar_height"
-                    android:layout_gravity="bottom"/>
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
+    <ScrollView
+        android:id="@+id/containerScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/keyline">
+            android:orientation="vertical">
 
             <TextSwitcher
-                android:id="@+id/error_switcher"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:id="@+id/titleSwitcher"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/step_text"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.CardView
+                android:id="@+id/textField"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+                android:layout_margin="@dimen/margin_card"
+                android:padding="@dimen/baseline_card"
+                android:background="?attr/colorPrimary"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="@dimen/setup_textfield_corner_radius"
+                app:cardElevation="@dimen/elevation_card">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="?attr/actionBarSize"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <ViewAnimator
+                            android:id="@+id/inputSwitcher"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="bottom"/>
+
+                        <ImageButton
+                            android:id="@+id/nextButton"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/icon_margin"
+                            android:gravity="center"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:background="@drawable/selector"
+                            android:contentDescription="@string/next_step"/>
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:progressDrawable="@drawable/progress_single_input_form"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/setup_progressbar_height"
+                        android:layout_gravity="bottom"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/baseline">
+
+                <TextSwitcher
+                    android:id="@+id/errorSwitcher"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/stepText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+
+            </LinearLayout>
+
+            <TextSwitcher
+                android:id="@+id/detailsSwitcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/baseline"
+                android:paddingRight="@dimen/baseline"/>
 
         </LinearLayout>
 
-		<TextSwitcher
-			android:id="@+id/details_switcher"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/keyline"
-            android:paddingRight="@dimen/keyline"/>
+    </ScrollView>
 
-	</LinearLayout>
-</ScrollView>
+</FrameLayout>

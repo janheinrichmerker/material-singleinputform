@@ -16,10 +16,14 @@
 
 package com.heinrichreimersoftware.singleinputform.example;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.heinrichreimersoftware.singleinputform.SingleInputFormActivity;
@@ -43,69 +47,112 @@ public class MainActivity extends SingleInputFormActivity{
 	private static final String DATA_KEY_BIRTHDAY = "birthday";
 	private static final String DATA_KEY_CITY = "city";
 
-	@Override
-	protected List<Step> getSteps(Context context){
-		List<Step> steps = new ArrayList<Step>();
-        steps.add(
-                new CheckBoxStep(context, DATA_KEY_EULA, R.string.eula, R.string.eula_title, R.string.eula_error, R.string.eula_details, new CheckBoxStep.StepChecker() {
+    @Override
+    protected List<Step> onCreateSteps(){
+        List<Step> steps = new ArrayList<>();
+
+        steps.add(new CheckBoxStep.Builder(this, DATA_KEY_EULA)
+                .titleResId(R.string.eula_title)
+                .errorResId(R.string.eula_error)
+                .detailsResId(R.string.eula_details)
+                .textResId(R.string.eula)
+                .validator(new CheckBoxStep.Validator() {
                     @Override
-                    public boolean check(boolean input) {
+                    public boolean validate(boolean input) {
                         return input;
                     }
                 })
-        );
-        steps.add(
-                new TextStep(context, DATA_KEY_EMAIL, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.email, R.string.email_error, R.string.email_details, new TextStep.StepChecker() {
+                .build());
+
+        steps.add(new TextStep.Builder(this, DATA_KEY_EMAIL)
+                .titleResId(R.string.email)
+                .errorResId(R.string.email_error)
+                .detailsResId(R.string.email_details)
+                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                .validator(new TextStep.Validator() {
                     @Override
-                    public boolean check(String input) {
-                        return android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches();
+                    public boolean validate(String input) {
+                        return Patterns.EMAIL_ADDRESS.matcher(input).matches();
                     }
                 })
-        );
-		steps.add(
-				new TextStep(context, DATA_KEY_PASSWORD, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, R.string.password, R.string.password_error, R.string.password_details, new TextStep.StepChecker() {
-					@Override
-					public boolean check(String input) {
-						return input.length() >= 5;
-					}
-				})
-		);
-		steps.add(
-				new DateStep(context, DATA_KEY_BIRTHDAY, R.string.birthday, R.string.birthday_error, R.string.birthday_details, new DateStep.StepChecker(){
-					@Override
-					public boolean check(int year, int month, int day){
-						Calendar today = new GregorianCalendar();
-						Calendar birthday = new GregorianCalendar(year, month, day);
-						today.add(Calendar.YEAR, -14);
-						return today.after(birthday);
-					}
-				})
-		);
-		steps.add(
-				new SeekBarStep(context, DATA_KEY_HEIGHT, 150, 180, R.string.height, R.string.height_error, R.string.height_details, new SeekBarStep.StepChecker() {
-					@Override
-					public boolean check(int progress) {
-						return progress >= 160;
-					}
-				})
-		);
-		steps.add(
-				new TextStep(context, DATA_KEY_CITY, InputType.TYPE_CLASS_TEXT, R.string.city, R.string.city_error, R.string.city_details)
-		);
+                .build());
 
-		return steps;
-	}
+        steps.add(new TextStep.Builder(this, DATA_KEY_PASSWORD)
+                .titleResId(R.string.password)
+                .errorResId(R.string.password_error)
+                .detailsResId(R.string.password_details)
+                .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                .validator(new TextStep.Validator() {
+                    @Override
+                    public boolean validate(String input) {
+                        return input.length() >= 5;
+                    }
+                })
+                .build());
+
+        steps.add(new DateStep.Builder(this, DATA_KEY_BIRTHDAY)
+                .titleResId(R.string.birthday)
+                .errorResId(R.string.birthday_error)
+                .detailsResId(R.string.birthday_details)
+                .validator(new DateStep.Validator() {
+                    @Override
+                    public boolean validate(int year, int month, int day) {
+                        Calendar today = new GregorianCalendar();
+                        Calendar birthday = new GregorianCalendar(year, month, day);
+                        today.add(Calendar.YEAR, -14);
+                        return today.after(birthday);
+                    }
+                })
+                .build());
+
+        steps.add(new SeekBarStep.Builder(this, DATA_KEY_HEIGHT)
+                .titleResId(R.string.height)
+                .errorResId(R.string.height_error)
+                .detailsResId(R.string.height_details)
+                .min(150)
+                .max(190)
+                .validator(new SeekBarStep.Validator() {
+                    @Override
+                    public boolean validate(int progress) {
+                        return progress >= 160;
+                    }
+                })
+                .build());
+
+        steps.add(new TextStep.Builder(this, DATA_KEY_CITY)
+                .titleResId(R.string.city)
+                .errorResId(R.string.city_error)
+                .detailsResId(R.string.city_details)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .build());
+
+        return steps;
+    }
+
+    @Override
+    protected View onCreateFinishedView(LayoutInflater inflater, ViewGroup parent) {
+        return inflater.inflate(R.layout.finished_layout, parent, false);
+    }
 
 	@Override
-	protected void onFormFinished(Bundle data){
-		Toast.makeText(this, "Form finished: " +
-				CheckBoxStep.checked(data, DATA_KEY_EULA) + ", " +
-                TextStep.text(data, DATA_KEY_EMAIL) + ", " +
-				TextStep.text(data, DATA_KEY_PASSWORD) + ", " +
-				DateStep.day(data, DATA_KEY_BIRTHDAY) + "." + DateStep.month(data, DATA_KEY_BIRTHDAY) + "." + DateStep.year(data, DATA_KEY_BIRTHDAY) + ", " +
-				SeekBarStep.progress(data, DATA_KEY_HEIGHT) + ", " +
-				TextStep.text(data, DATA_KEY_CITY),
-				Toast.LENGTH_LONG).show();
-		Log.d("MainActivity", "data: " + data.toString());
-	}
+	protected void onFormFinished(Bundle data) {
+        Toast.makeText(this, "Form finished: " +
+                        CheckBoxStep.checked(data, DATA_KEY_EULA) + ", " +
+                        TextStep.text(data, DATA_KEY_EMAIL) + ", " +
+                        TextStep.text(data, DATA_KEY_PASSWORD) + ", " +
+                        DateStep.day(data, DATA_KEY_BIRTHDAY) + "." + DateStep.month(data, DATA_KEY_BIRTHDAY) + "." + DateStep.year(data, DATA_KEY_BIRTHDAY) + ", " +
+                        SeekBarStep.progress(data, DATA_KEY_HEIGHT) + ", " +
+                        TextStep.text(data, DATA_KEY_CITY),
+                Toast.LENGTH_LONG).show();
+        Log.d("MainActivity", "data: " + data.toString());
+
+        //Wait 4 seconds and finish
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 4000);
+
+    }
 }

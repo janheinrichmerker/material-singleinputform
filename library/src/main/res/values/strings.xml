@@ -22,5 +22,6 @@
 	<string name="page_number">%1$d/%2$d</string>
 
 	<!-- Only needed for accessibility -->
-	<string name="next_step">Next step</string>
+    <string name="next_step">Next step</string>
+    <string name="finish">Finish</string>
 </resources>

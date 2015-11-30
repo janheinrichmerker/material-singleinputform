@@ -42,4 +42,6 @@
 	<string name="city">City</string>
 	<string name="city_error">Enter a city.</string>
 	<string name="city_details">We need this information to find you if you mess with us.</string>
+
+    <string name="finished">Form finished!</string>
 </resources>

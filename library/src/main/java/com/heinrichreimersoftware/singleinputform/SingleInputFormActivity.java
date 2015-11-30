@@ -20,17 +20,20 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.CardView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -51,13 +54,12 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 	private static final String KEY_DATA = "key_data";
 	private static final String KEY_STEP_INDEX = "key_step_index";
 
-	private Property<ProgressBar, Integer> PB_PROGRESS_PROPERTY =
+	private static final Property<ProgressBar, Integer> PB_PROGRESS_PROPERTY =
 			new Property<ProgressBar, Integer>(Integer.class, "PB_PROGRESS_PROPERTY"){
 
 				@Override
 				public void set(ProgressBar pb, Integer value){
 					pb.setProgress(value);
-					setProgressDrawable();
 				}
 
 				@Override
@@ -65,42 +67,43 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 					return pb.getProgress();
 				}
 			};
-	private static List<Step> sSteps = new ArrayList<Step>();
-	private FragmentActivity activity = this;
+
+	private List<Step> steps = new ArrayList<Step>();
 	private Bundle setupData = new Bundle();
-	private int mStepIndex = 0;
-	private boolean mErrored;
+	private int stepIndex = 0;
+	private boolean error;
 
-	private ScrollView mContainerScrollView;
-	private TextSwitcher mTitleSwitcher;
-	private TextSwitcher mErrorSwitcher;
-	private TextSwitcher mDetailsSwitcher;
-	private CardView mTextField;
-	private ViewAnimator mInputSwitcher;
-	private ImageButton mNextButton;
-	private ProgressBar mProgressbar;
-	private TextView mStepText;
+    private FrameLayout container;
+    private ScrollView containerScrollView;
+	private TextSwitcher titleSwitcher;
+	private TextSwitcher errorSwitcher;
+	private TextSwitcher detailsSwitcher;
+	private CardView textField;
+	private ViewAnimator inputSwitcher;
+	private ImageButton nextButton;
+	private ProgressBar progress;
+	private TextView stepText;
 
-	private View.OnClickListener mOnNextButtonClickListener = new View.OnClickListener(){
+	private View.OnClickListener nextButtonClickListener = new View.OnClickListener(){
 		@Override
 		public void onClick(View v){
 			nextStep();
 		}
 	};
 
-	private Drawable mButtonNextIcon;
-	private Drawable mButtonFinishIcon;
+	private Drawable buttonNextIcon;
+	private Drawable buttonFinishIcon;
 
-	private int mTextFieldBackgroundColor = -1;
-	private int mProgressBackgroundColor = -1;
+	private int textFieldBackgroundColor = -1;
+	private int progressBackgroundColor = -1;
 
-	private int mTitleTextColor = -1;
-	private int mDetailsTextColor = -1;
-	private int mErrorTextColor = -1;
+	private int titleTextColor = -1;
+	private int detailsTextColor = -1;
+	private int errorTextColor = -1;
 
 	@Override
 	public void onBackPressed(){
-		if(mStepIndex == 0){
+		if(stepIndex == 0){
 			finish();
 		}
 		else{
@@ -115,32 +118,36 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
 		loadTheme();
 
-		sSteps = getSteps(this);
+        findViews();
 
-		findViews();
+        steps = onCreateSteps();
 
 		if(savedInstanceState != null){
 			setupData = savedInstanceState.getBundle(KEY_DATA);
-			mStepIndex = savedInstanceState.getInt(KEY_STEP_INDEX, 0);
+			stepIndex = savedInstanceState.getInt(KEY_STEP_INDEX, 0);
 		}
 
 		setupTitle();
 		setupInput();
 		setupError();
-		setupDetails();
+        setupDetails();
 
-		mNextButton.setOnClickListener(mOnNextButtonClickListener);
-		mErrorSwitcher.setText("");
-
-		updateStep();
+		nextButton.setOnClickListener(nextButtonClickListener);
+		errorSwitcher.setText("");
+        updateStep();
 	}
 
-	@Override
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
 	public void onRestoreInstanceState(Bundle savedInstanceState){
 		super.onSaveInstanceState(savedInstanceState);
 		if(savedInstanceState != null){
 			setupData = savedInstanceState.getBundle(KEY_DATA);
-			mStepIndex = savedInstanceState.getInt(KEY_STEP_INDEX, 0);
+			stepIndex = savedInstanceState.getInt(KEY_STEP_INDEX, 0);
 		}
 	}
 
@@ -149,7 +156,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 		setupData = getCurrentStep().save(setupData);
 		outState.putBundle(KEY_DATA, setupData);
-		outState.putInt(KEY_STEP_INDEX, mStepIndex);
+		outState.putInt(KEY_STEP_INDEX, stepIndex);
 	}
 
 	@Override
@@ -158,53 +165,53 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		super.onPause();
 	}
 
-	protected abstract List<Step> getSteps(Context context);
+	protected abstract List<Step> onCreateSteps();
 
 	private void findViews(){
-		mContainerScrollView = (ScrollView) findViewById(R.id.container_scroll_view);
-		mTitleSwitcher = (TextSwitcher) findViewById(R.id.title_switcher);
-		mErrorSwitcher = (TextSwitcher) findViewById(R.id.error_switcher);
-		mDetailsSwitcher = (TextSwitcher) findViewById(R.id.details_switcher);
-        mTextField = (CardView) findViewById(R.id.text_field);
-		mInputSwitcher = (ViewAnimator) findViewById(R.id.input_switcher);
-		mNextButton = (ImageButton) findViewById(R.id.next_button);
-		mProgressbar = (ProgressBar) findViewById(R.id.progressbar);
-		mStepText = (TextView) findViewById(R.id.step_text);
+        container = (FrameLayout) findViewById(R.id.container);
+        containerScrollView = (ScrollView) findViewById(R.id.containerScrollView);
+		titleSwitcher = (TextSwitcher) findViewById(R.id.titleSwitcher);
+		errorSwitcher = (TextSwitcher) findViewById(R.id.errorSwitcher);
+		detailsSwitcher = (TextSwitcher) findViewById(R.id.detailsSwitcher);
+        textField = (CardView) findViewById(R.id.textField);
+		inputSwitcher = (ViewAnimator) findViewById(R.id.inputSwitcher);
+		nextButton = (ImageButton) findViewById(R.id.nextButton);
+		progress = (ProgressBar) findViewById(R.id.progress);
+		stepText = (TextView) findViewById(R.id.stepText);
+		setProgressDrawable();
 	}
 
 	protected Step getCurrentStep(){
-		return getStep(mStepIndex);
+		return getStep(stepIndex);
 	}
 
 	protected Step getStep(int position){
-		Step step = sSteps.get(position);
-		step.setContext(this);
-		return step;
+		return steps.get(position);
 	}
 
 	private void loadTheme(){
 		/* Default values */
-		mButtonNextIcon = getResources().getDrawable(R.drawable.ic_action_next_item);
-		mButtonFinishIcon = getResources().getDrawable(R.drawable.ic_action_accept);
+		buttonNextIcon = getResources().getDrawable(R.drawable.ic_arrow_forward);
+		buttonFinishIcon = getResources().getDrawable(R.drawable.ic_done);
 
 
 		/* Custom values */
 		int[] attrs = {R.attr.colorPrimary, R.attr.colorPrimaryDark, android.R.attr.textColorPrimary, android.R.attr.textColorSecondary, R.attr.sifNextIcon, R.attr.sifFinishIcon};
 		TypedArray array = obtainStyledAttributes(attrs);
 
-        mTextFieldBackgroundColor = array.getColor(0, 0);
-        mProgressBackgroundColor = array.getColor(1, 0);
-        mTitleTextColor = mErrorTextColor = array.getColor(2, 0);
-        mDetailsTextColor = array.getColor(3, 0);
+        textFieldBackgroundColor = array.getColor(0, 0);
+        progressBackgroundColor = array.getColor(1, 0);
+        titleTextColor = errorTextColor = array.getColor(2, 0);
+        detailsTextColor = array.getColor(3, 0);
 
         Drawable buttonNextIcon = array.getDrawable(4);
         if(buttonNextIcon != null){
-            mButtonNextIcon = buttonNextIcon;
+            this.buttonNextIcon = buttonNextIcon;
         }
 
         Drawable buttonFinishIcon = array.getDrawable(5);
         if(buttonFinishIcon != null){
-            mButtonFinishIcon = buttonFinishIcon;
+            this.buttonFinishIcon = buttonFinishIcon;
         }
 
         array.recycle();
@@ -220,96 +227,109 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
             interpolator = new AccelerateInterpolator(1.0f);
         }
 
-        Animation animation = AnimationUtils.loadAnimation(activity, animationResId);
+        Animation animation = AnimationUtils.loadAnimation(this, animationResId);
         animation.setInterpolator(interpolator);
 
         return animation;
     }
 
 	private void setupTitle(){
-        mTitleSwitcher.setInAnimation(getAnimation(R.anim.slide_in_to_bottom, true));
-        mTitleSwitcher.setOutAnimation(getAnimation(R.anim.slide_out_to_top, false));
+        titleSwitcher.setInAnimation(getAnimation(R.anim.slide_in_to_bottom, true));
+        titleSwitcher.setOutAnimation(getAnimation(R.anim.slide_out_to_top, false));
 
-		mTitleSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		titleSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
-			@Override
-			public View makeView(){
-				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_title, null);
-				if(view != null){
-					view.setTextColor(mTitleTextColor);
-				}
-				return view;
-			}
-		});
+            @Override
+            public View makeView() {
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_title, null);
+                if (view != null) {
+                    view.setTextColor(titleTextColor);
+                }
+                return view;
+            }
+        });
 
-		mTitleSwitcher.setText("");
+		titleSwitcher.setText("");
 	}
 
 	private void setupInput(){
-		mInputSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
-		mInputSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
+		inputSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
+		inputSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
-		mInputSwitcher.removeAllViews();
-		for(int i = 0; i < stepsSize(); i++){
-			mInputSwitcher.addView(getStep(i).getView());
+		inputSwitcher.removeAllViews();
+		for(int i = 0; i < steps.size(); i++){
+			inputSwitcher.addView(getStep(i).getView());
 		}
 	}
 
 	private void setupError(){
-        mErrorSwitcher.setInAnimation(getAnimation(android.R.anim.slide_in_left, true));
-        mErrorSwitcher.setOutAnimation(getAnimation(android.R.anim.slide_out_right, false));
+        errorSwitcher.setInAnimation(getAnimation(android.R.anim.slide_in_left, true));
+        errorSwitcher.setOutAnimation(getAnimation(android.R.anim.slide_out_right, false));
 
-		mErrorSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		errorSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
-			@Override
-			public View makeView(){
-				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_error, null);
-				if(view != null && mErrorTextColor != -1){
-					view.setTextColor(mErrorTextColor);
-				}
-				return view;
-			}
-		});
+            @Override
+            public View makeView() {
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_error, null);
+                if (view != null && errorTextColor != -1) {
+                    view.setTextColor(errorTextColor);
+                }
+                return view;
+            }
+        });
 
-		mErrorSwitcher.setText("");
+		errorSwitcher.setText("");
 	}
 
 	private void setupDetails(){
-        mDetailsSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
-        mDetailsSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
+        detailsSwitcher.setInAnimation(getAnimation(R.anim.alpha_in, true));
+        detailsSwitcher.setOutAnimation(getAnimation(R.anim.alpha_out, false));
 
-		mDetailsSwitcher.setFactory(new ViewSwitcher.ViewFactory(){
+		detailsSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
 
-			@Override
-			public View makeView(){
-				TextView view = (TextView) activity.getLayoutInflater().inflate(R.layout.view_details, null);
-				if(view != null && mDetailsTextColor != -1){
-					view.setTextColor(mDetailsTextColor);
-				}
-				return view;
-			}
-		});
+            @Override
+            public View makeView() {
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_details, null);
+                if (view != null && detailsTextColor != -1) {
+                    view.setTextColor(detailsTextColor);
+                }
+                return view;
+            }
+        });
 
-		mDetailsSwitcher.setText("");
+		detailsSwitcher.setText("");
 	}
 
 	private void updateStep(){
-		if(mStepIndex >= stepsSize()){
+		if(stepIndex >= steps.size()){
 			hideSoftInput();
+
+            View finishedView = onCreateFinishedView(getLayoutInflater(), container);
+            if(finishedView != null){
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1){
+                    finishedView.setAlpha(0);
+                    finishedView.setVisibility(View.VISIBLE);
+                    container.addView(finishedView);
+                    finishedView.animate()
+                            .alpha(1)
+                            .setDuration(getResources().getInteger(
+                                    android.R.integer.config_mediumAnimTime));
+                }
+                else {
+                    finishedView.setVisibility(View.VISIBLE);
+                    container.addView(finishedView);
+                }
+            }
+
 			onFormFinished(setupData);
-			finish();
 			return;
 		}
 		updateViews();
-		mContainerScrollView.smoothScrollTo(0, 0);
-	}
-
-	private int stepsSize(){
-		return sSteps.size();
+		containerScrollView.smoothScrollTo(0, 0);
 	}
 
 	private void hideSoftInput(){
-		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
 		View v = getCurrentFocus();
 		if(v == null) return;
@@ -317,17 +337,23 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 	}
 
-	protected abstract void onFormFinished(Bundle data);
+    protected View onCreateFinishedView(LayoutInflater inflater, ViewGroup parent){
+        return null;
+    }
+
+    protected abstract void onFormFinished(Bundle data);
 
 	private void updateViews(){
 		Step step = getCurrentStep();
 
-		if(mStepIndex + 1 >= stepsSize()){
-			mNextButton.setImageDrawable(mButtonFinishIcon);
+		if(stepIndex + 1 >= steps.size()){
+			nextButton.setImageDrawable(buttonFinishIcon);
+            nextButton.setContentDescription(getString(R.string.finish));
 			step.updateView(true);
 		}
 		else{
-			mNextButton.setImageDrawable(mButtonNextIcon);
+			nextButton.setImageDrawable(buttonNextIcon);
+            nextButton.setContentDescription(getString(R.string.next_step));
 			step.updateView(false);
 		}
 
@@ -335,40 +361,40 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
 		setTextFieldBackgroundDrawable();
 
-		mInputSwitcher.setDisplayedChild(mStepIndex);
-		mErrorSwitcher.setText("");
-		mDetailsSwitcher.setText(step.getDetails());
-		mTitleSwitcher.setText(step.getTitle());
-		mStepText.setText(getString(R.string.page_number, mStepIndex + 1, stepsSize()));
+		inputSwitcher.setDisplayedChild(stepIndex);
+		errorSwitcher.setText("");
+		detailsSwitcher.setText(step.getDetails(this));
+		titleSwitcher.setText(step.getTitle(this));
+		stepText.setText(getString(R.string.page_number, stepIndex + 1, steps.size()));
 
-        mStepText.setTextColor(mDetailsTextColor);
+        stepText.setTextColor(detailsTextColor);
 
 		updateProgressbar();
 	}
 
 	private void setTextFieldBackgroundDrawable(){
-        if(mTextFieldBackgroundColor != -1) {
-            mTextField.setCardBackgroundColor(mTextFieldBackgroundColor);
+        if(textFieldBackgroundColor != -1) {
+            textField.setCardBackgroundColor(textFieldBackgroundColor);
         }
 	}
 
 	private void setProgressDrawable(){
-        if(mProgressBackgroundColor != -1) {
-            Drawable progressDrawable = mProgressbar.getProgressDrawable();
+        if(progressBackgroundColor != -1) {
+            Drawable progressDrawable = progress.getProgressDrawable();
             if (progressDrawable != null) {
-                progressDrawable.setColorFilter(mProgressBackgroundColor, PorterDuff.Mode.SRC_IN);
+                progressDrawable.setColorFilter(progressBackgroundColor, PorterDuff.Mode.SRC_IN);
             }
         }
 	}
 
 	private void updateProgressbar(){
-		mProgressbar.setMax(stepsSize() * 100);
-		ObjectAnimator.ofInt(mProgressbar, PB_PROGRESS_PROPERTY, mStepIndex * 100).start();
+		progress.setMax(steps.size() * 100);
+		ObjectAnimator.ofInt(progress, PB_PROGRESS_PROPERTY, stepIndex * 100).start();
 	}
 
 	protected void previousStep(){
 		setupData = getCurrentStep().save(setupData);
-		mStepIndex--;
+		stepIndex--;
 		updateStep();
 	}
 
@@ -376,24 +402,24 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		Step step = getCurrentStep();
 		boolean checkStep = checkStep();
 		if(!checkStep){
-			if(!mErrored){
-				mErrored = true;
-				mErrorSwitcher.setText(step.getError());
+			if(!error){
+				error = true;
+				errorSwitcher.setText(step.getError(this));
 			}
 		}
 		else{
-			mErrored = false;
+			error = false;
 		}
-		if(mErrored){
+		if(error){
 			return;
 		}
 		setupData = step.save(setupData);
 
-		mStepIndex++;
+		stepIndex++;
 		updateStep();
 	}
 
 	private boolean checkStep(){
-		return getCurrentStep().check();
+		return getCurrentStep().validate();
 	}
 }
