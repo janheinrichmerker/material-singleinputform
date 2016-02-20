@@ -21,7 +21,10 @@ http://youtu.be/A99g6NDvn_w
 Demo
 ----
 A demo app is available on Google Play:
-[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png)](https://play.google.com/store/apps/details?id=com.heinrichreimersoftware.singleinputform.example) 
+
+<a href="https://play.google.com/store/apps/details?id=com.heinrichreimersoftware.singleinputform.example">
+	<img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" height="60" />
+</a>
 
 Screenshots
 -----------
