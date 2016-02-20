@@ -1,6 +1,9 @@
 material-singleinputform
 =======================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-blue.svg?style=flat)](https://android-arsenal.com/details/1/1163)
+[![JitPack](https://jitpack.io/v/com.heinrichreimersoftware/material-singleinputform.svg)](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
+[![Build Status](https://travis-ci.org/HeinrichReimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/HeinrichReimer/material-singleinputform)
+[![Apache License 2.0](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 A single EditText instead of a classical form.
 
@@ -15,15 +18,10 @@ Also, [TextSwitcher][3] got completely rediscovered to animate the form: title, 
 Here is a video demonstrating a sample form:
 http://youtu.be/A99g6NDvn_w
 
-Information
-----
-I'm currently not actively developing this library because of school work. Until August I'll only merge pull requests. Thanks for your patience.
-
 Demo
 ----
 A demo app is available on Google Play:
-
-[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=com.heinrichreimersoftware.singleinputform.example)
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png)](https://play.google.com/store/apps/details?id=com.heinrichreimersoftware.singleinputform.example) 
 
 Screenshots
 -----------
@@ -35,16 +33,22 @@ Screenshots
 
 Dependency
 ----------
-
-*material-singleinputform* is available on Maven Central
+*material-singleinputform* is available on [**jitpack.io**](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
 
 **Gradle dependency:**
-
-    dependencies {
-	    compile 'com.heinrichreimersoftware.singleinputform:library:2.0.2'
-    }
-
-Get the latest dependency with ["Gradle, please"][GP]
+````gradle
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+````
+````gradle
+dependencies {
+    compile 'com.heinrichreimersoftware:material-singleinputform:2.0.2'
+}
+````
 
 How-To-Use
 -----
