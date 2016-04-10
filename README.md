@@ -1,6 +1,6 @@
 material-singleinputform
 =======================
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-blue.svg?style=flat)](https://android-arsenal.com/details/1/1163)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1163)
 [![JitPack](https://jitpack.io/v/com.heinrichreimersoftware/material-singleinputform.svg)](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
 [![Build Status](https://travis-ci.org/HeinrichReimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/HeinrichReimer/material-singleinputform)
 [![Apache License 2.0](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
