@@ -22,7 +22,6 @@ local.properties
 
 # Gradle stuff
 .gradle/
-gradle/
 build/
 .idea/
 out/
