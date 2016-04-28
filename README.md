@@ -41,15 +41,15 @@ Dependency
 **Gradle dependency:**
 ````gradle
 allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 ````
 ````gradle
 dependencies {
-    compile 'com.heinrichreimersoftware:material-singleinputform:2.0.2'
+	compile 'com.heinrichreimersoftware:material-singleinputform:2.0.2'
 }
 ````
 
@@ -58,72 +58,65 @@ How-To-Use
 
 **Step 1:** Your `Activity` must extend [`SingleInputFormActivity`][SIFA]:
 
-    public class MainActivity extends SingleInputFormActivity {
-        //...
-    }
+````java
+public class MainActivity extends SingleInputFormActivity {
+	//...
+}
+````
 
 **Step 2:** Implement abstract methods:
 
-    public class MainActivity extends SingleInputFormActivity{
-	    private static final String DATA_KEY_EXAMPLE = "example";
-	    
-	    @Override
-	    protected List<Step> getSteps(Context context){
-	        List<Step> steps = new ArrayList<Step>();
-	        
-	        steps.add(
-	            new TextStep(context, DATA_KEY_EXAMPLE, InputType.TYPE_CLASS_TEXT, R.string.example, R.string.example_error, R.string.example_details)
-	        );
-	        
-	        //Add more steps here...
-	        
-	        return steps;
-	    }
-	    
-	    @Override
-	    protected void onFormFinished(Bundle data){
-            //Get the form data
-	        String text = TextStep.text(data, DATA_KEY_EXAMPLE);
-	        //...
-	    }
+````java
+public class MainActivity extends SingleInputFormActivity{
+	private static final String DATA_KEY_EXAMPLE = "example";
+	
+	@Override
+	protected List<Step> getSteps(Context context){
+		List<Step> steps = new ArrayList<Step>();
+		steps.add(new TextStep(
+				context,
+				DATA_KEY_EXAMPLE,
+				InputType.TYPE_CLASS_TEXT,
+				R.string.example,
+				R.string.example_error,
+				R.string.example_details)
+		);
+		//Add more steps here...
+		return steps;
 	}
+	
+	@Override
+	protected void onFormFinished(Bundle data){
+		//Get the form data
+		String text = TextStep.text(data, DATA_KEY_EXAMPLE);
+		//...
+	}
+}
+````
 
 **Step 3:** Theme:
 
-    <style name="YourThemeForSingleInputFormActivity" parent="Theme.AppCompat.Light.NoActionBar">
-
-        <!-- Used for: input field background -->
-        <item name="colorPrimary">@color/material_bordeaux_500</item>
-
-        <!-- Used for: form progress color, status bar color (API 21+) -->
-        <item name="colorPrimaryDark">@color/material_bordeaux_700</item>
-
-        <!-- Used for: title text color, error text color -->
-        <item name="android:textColorPrimary">@color/material_bordeaux_800</item>
-
-        <!-- Used for: details text color, step indicator text color -->
-        <item name="android:textColorSecondary">@color/material_black_54</item>
-
-        <!-- Used for: input text color, input widget color -->
-        <item name="android:textColorPrimaryInverse">@color/material_white_100</item>
-
-        <!-- Used for: input widget color -->
-        <item name="android:textColorSecondaryInverse">@color/material_white_70</item>
-
-    </style>
-
-Changes
--------
-
-* **Version 2.0:**
-    * [`CheckBoxStep`][CBS] (#6)
-    * [`SeekBarStep`][SBS] (#6)
-    * Material design
-    * Simplified themes (see the tutorial above)
-    * Fixed bug #4
-    * Fixed bug #5
-* **Version 1.0:**
-    * Initial release
+````xml
+<style name="YourThemeForSingleInputFormActivity" parent="Theme.AppCompat.Light.NoActionBar">
+	<!-- Used for: input field background -->
+	<item name="colorPrimary">@color/material_bordeaux_500</item>
+	
+	<!-- Used for: form progress color, status bar color (API 21+) -->
+	<item name="colorPrimaryDark">@color/material_bordeaux_700</item>
+	
+	<!-- Used for: title text color, error text color -->
+	<item name="android:textColorPrimary">@color/material_bordeaux_800</item>
+	
+	<!-- Used for: details text color, step indicator text color -->
+	<item name="android:textColorSecondary">@color/material_black_54</item>
+	
+	<!-- Used for: input text color, input widget color -->
+	<item name="android:textColorPrimaryInverse">@color/material_white_100</item>
+	
+	<!-- Used for: input widget color -->
+	<item name="android:textColorSecondaryInverse">@color/material_white_70</item>
+</style>
+````
 
 Open source libraries
 -------
@@ -132,13 +125,11 @@ _material-singleinputform_ uses the following open source libraries or files:
 
 * [singleinputform][4] by [@Flavien Laurent][5] (Apache License 2.0)
 * [DiscreteSeekBar][6] f by [@Gustavo Claramunt][7] (Apache License 2.0)
-* [DateTimePicker][8] by [@Flavien Laurent][5] and [@Edison Wang][9] (Apache License 2.0)
-* [NineOldAndroids][10] by [@Jake Wharton][11] (Apache License 2.0)
 
 License
 -------
 
-    Copyright 2015 Heinrich Reimer
+    Copyright 2016 Heinrich Reimer
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -160,12 +151,7 @@ License
 [TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
 [SBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/SeekBarStep.java
 [SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
-[GP]: http://gradleplease.appspot.com/#com.heinrichreimersoftware.singleinputform
 [4]: https://github.com/flavienlaurent/singleinputform
 [5]: https://github.com/flavienlaurent
 [6]: https://github.com/AnderWeb/discreteSeekBar
 [7]: https://github.com/AnderWeb
-[8]: https://github.com/flavienlaurent/datetimepicker
-[9]: https://github.com/edisonw
-[10]: https://github.com/JakeWharton/NineOldAndroids
-[11]: https://github.com/JakeWharton
