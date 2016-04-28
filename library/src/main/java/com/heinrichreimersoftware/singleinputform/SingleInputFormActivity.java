@@ -16,14 +16,17 @@
 
 package com.heinrichreimersoftware.singleinputform;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,13 +46,11 @@ import android.widget.ViewAnimator;
 import android.widget.ViewSwitcher;
 
 import com.heinrichreimersoftware.singleinputform.steps.Step;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.util.Property;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class SingleInputFormActivity extends ActionBarActivity {
+public abstract class SingleInputFormActivity extends AppCompatActivity {
 
 	private static final String KEY_DATA = "key_data";
 	private static final String KEY_STEP_INDEX = "key_step_index";
@@ -68,8 +69,8 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 				}
 			};
 
-	private List<Step> steps = new ArrayList<Step>();
-	private Bundle setupData = new Bundle();
+    private List<Step> steps = new ArrayList<>();
+    private Bundle setupData = new Bundle();
 	private int stepIndex = 0;
 	private boolean error;
 
@@ -189,10 +190,11 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 		return steps.get(position);
 	}
 
-	private void loadTheme(){
-		/* Default values */
-		buttonNextIcon = getResources().getDrawable(R.drawable.ic_arrow_forward);
-		buttonFinishIcon = getResources().getDrawable(R.drawable.ic_done);
+    @SuppressWarnings("ResourceType")
+    private void loadTheme() {
+        /* Default values */
+        buttonNextIcon = ContextCompat.getDrawable(this, R.drawable.ic_arrow_forward);
+        buttonFinishIcon = ContextCompat.getDrawable(this, R.drawable.ic_done);
 
 
 		/* Custom values */
@@ -241,7 +243,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
             @Override
             public View makeView() {
-                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_title, null);
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_title, titleSwitcher, false);
                 if (view != null) {
                     view.setTextColor(titleTextColor);
                 }
@@ -270,7 +272,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
             @Override
             public View makeView() {
-                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_error, null);
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_error, titleSwitcher, false);
                 if (view != null && errorTextColor != -1) {
                     view.setTextColor(errorTextColor);
                 }
@@ -289,7 +291,7 @@ public abstract class SingleInputFormActivity extends ActionBarActivity {
 
             @Override
             public View makeView() {
-                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_details, null);
+                TextView view = (TextView) getLayoutInflater().inflate(R.layout.view_details, titleSwitcher, false);
                 if (view != null && detailsTextColor != -1) {
                     view.setTextColor(detailsTextColor);
                 }

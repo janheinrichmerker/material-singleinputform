@@ -166,6 +166,7 @@ public class SeekBarStep extends Step {
             return this;
         }
 
+        @SuppressWarnings("ResourceType")
         private void loadTheme(){
             int[] attrs = {android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondaryInverse, R.attr.colorPrimaryDark};
             TypedArray array = context.obtainStyledAttributes(attrs);

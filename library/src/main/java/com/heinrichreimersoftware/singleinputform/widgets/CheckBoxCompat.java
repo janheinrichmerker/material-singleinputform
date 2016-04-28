@@ -17,10 +17,10 @@
 package com.heinrichreimersoftware.singleinputform.widgets;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
 
-public class CheckBoxCompat extends CheckBox {
+public class CheckBoxCompat extends AppCompatCheckBox {
 
     public CheckBoxCompat(Context context) {
         super(context);
