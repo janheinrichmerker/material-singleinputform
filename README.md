@@ -49,7 +49,7 @@ allprojects {
 ````
 ````gradle
 dependencies {
-	compile 'com.heinrichreimersoftware:material-singleinputform:2.0.2'
+	compile 'com.heinrichreimersoftware:material-singleinputform:2.1.2'
 }
 ````
 
