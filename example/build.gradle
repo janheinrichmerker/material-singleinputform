@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 def versionMajor = 3
 def versionMinor = 0
-def versionPatch = 0
+def versionPatch = 1
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
@@ -29,5 +29,5 @@ android {
 
 dependencies {
 	compile project(':library')
-	compile 'com.android.support:appcompat-v7:23.3.0'
+	compile 'com.android.support:appcompat-v7:23.4.0'
 }

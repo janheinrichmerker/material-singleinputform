@@ -1,3 +1,5 @@
+![Icon](http://i.imgur.com/7KY5gBi.png)
+
 material-singleinputform
 =======================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1163)
@@ -49,7 +51,7 @@ allprojects {
 ````
 ````gradle
 dependencies {
-	compile 'com.heinrichreimersoftware:material-singleinputform:2.0.2'
+	compile 'com.heinrichreimersoftware:material-singleinputform:3.0.1'
 }
 ````
 
