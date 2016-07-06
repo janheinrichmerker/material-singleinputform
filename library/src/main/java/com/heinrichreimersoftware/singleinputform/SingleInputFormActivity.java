@@ -38,6 +38,7 @@ import android.view.animation.Interpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
@@ -76,7 +77,8 @@ public abstract class SingleInputFormActivity extends AppCompatActivity {
 
     private FrameLayout container;
     private ScrollView containerScrollView;
-	private TextSwitcher titleSwitcher;
+    private LinearLayout innerContainer;
+    private TextSwitcher titleSwitcher;
 	private TextSwitcher errorSwitcher;
 	private TextSwitcher detailsSwitcher;
 	private CardView textField;
@@ -171,7 +173,8 @@ public abstract class SingleInputFormActivity extends AppCompatActivity {
 	private void findViews(){
         container = (FrameLayout) findViewById(R.id.container);
         containerScrollView = (ScrollView) findViewById(R.id.containerScrollView);
-		titleSwitcher = (TextSwitcher) findViewById(R.id.titleSwitcher);
+        innerContainer = (LinearLayout) findViewById(R.id.innerContainer);
+        titleSwitcher = (TextSwitcher) findViewById(R.id.titleSwitcher);
 		errorSwitcher = (TextSwitcher) findViewById(R.id.errorSwitcher);
 		detailsSwitcher = (TextSwitcher) findViewById(R.id.detailsSwitcher);
         textField = (CardView) findViewById(R.id.textField);
@@ -424,4 +427,15 @@ public abstract class SingleInputFormActivity extends AppCompatActivity {
 	private boolean checkStep(){
 		return getCurrentStep().validate();
 	}
+
+    public void setInputGravity(int gravity) {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) innerContainer.getLayoutParams();
+        layoutParams.gravity = gravity;
+        innerContainer.setLayoutParams(layoutParams);
+    }
+
+    public int getInputGravity() {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) innerContainer.getLayoutParams();
+        return layoutParams.gravity;
+    }
 }

@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,8 @@ public class MainActivity extends SingleInputFormActivity{
     @Override
     protected List<Step> onCreateSteps(){
         List<Step> steps = new ArrayList<>();
+
+        setInputGravity(Gravity.CENTER);
 
         steps.add(new CheckBoxStep.Builder(this, DATA_KEY_EULA)
                 .titleResId(R.string.eula_title)
