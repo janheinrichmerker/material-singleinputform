@@ -51,7 +51,7 @@ allprojects {
 ````
 ````gradle
 dependencies {
-	compile 'com.heinrichreimersoftware:material-singleinputform:3.0.2'
+	compile 'com.heinrichreimersoftware:material-singleinputform:3.0.3'
 }
 ````
 
