@@ -6,6 +6,7 @@ material-singleinputform
 [![JitPack](https://jitpack.io/v/com.heinrichreimersoftware/material-singleinputform.svg)](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
 [![Build Status](https://travis-ci.org/HeinrichReimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/HeinrichReimer/material-singleinputform)
 [![Apache License 2.0](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/github/license/HeinrichReimer/material-singleinputorm.svg)](https://github.com/HeinrichReimer/material-singleinputform/blob/master/License.txt)
 
 A single EditText instead of a classical form.
 
