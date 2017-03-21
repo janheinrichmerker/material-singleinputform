@@ -5,7 +5,7 @@ material-singleinputform
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1163)
 [![JitPack](https://jitpack.io/v/com.heinrichreimersoftware/material-singleinputform.svg)](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
 [![Build Status](https://travis-ci.org/HeinrichReimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/HeinrichReimer/material-singleinputform)
-[![License](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://github.com/HeinrichReimer/material-singleinputform/blob/master/License.txt)
+[![License](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://github.com/HeinrichReimer/material-singleinputform/blob/master/LICENSE.txt)
 
 A single EditText instead of a classical form.
 
