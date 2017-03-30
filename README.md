@@ -4,8 +4,8 @@ material-singleinputform
 =======================
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-material--singleinputform-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1163)
 [![JitPack](https://jitpack.io/v/com.heinrichreimersoftware/material-singleinputform.svg)](https://jitpack.io/#com.heinrichreimersoftware/material-singleinputform)
-[![Build Status](https://travis-ci.org/HeinrichReimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/HeinrichReimer/material-singleinputform)
-[![License](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://github.com/HeinrichReimer/material-singleinputform/blob/master/LICENSE.txt)
+[![Build Status](https://travis-ci.org/heinrichreimer/material-singleinputform.svg?branch=master)](https://travis-ci.org/heinrichreimer/material-singleinputform)
+[![License](https://img.shields.io/github/license/HeinrichReimer/material-singleinputform.svg)](https://github.com/heinrichreimer/material-singleinputform/blob/master/LICENSE.txt)
 
 A single EditText instead of a classical form.
 
@@ -149,10 +149,10 @@ License
 [1]: https://github.com/flavienlaurent/singleinputform
 [2]: https://github.com/codrops/MinimalForm
 [3]: http://developer.android.com/reference/android/widget/TextSwitcher.html
-[CBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/CheckBoxStep.java
-[TS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
-[SBS]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/SeekBarStep.java
-[SIFA]: https://github.com/HeinrichReimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
+[CBS]: https://github.com/heinrichreimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/CheckBoxStep.java
+[TS]: https://github.com/heinrichreimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/TextStep.java
+[SBS]: https://github.com/heinrichreimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/steps/SeekBarStep.java
+[SIFA]: https://github.com/heinrichreimer/Android-SingleInputForm/blob/master/library/src/main/java/com/heinrichreimersoftware/singleinputform/SingleInputFormActivity.java
 [4]: https://github.com/flavienlaurent/singleinputform
 [5]: https://github.com/flavienlaurent
 [6]: https://github.com/AnderWeb/discreteSeekBar
