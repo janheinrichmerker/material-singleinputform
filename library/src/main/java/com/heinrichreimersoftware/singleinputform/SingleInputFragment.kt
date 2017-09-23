@@ -44,6 +44,7 @@ abstract class SingleInputFragment : Fragment() {
         setupDetails()
 
         nextButton?.setOnClickListener(nextButtonClickListener)
+        previousButton?.setOnClickListener { _ -> onBackPressed() }
         errorSwitcher?.setText("")
         updateStep()
 
@@ -78,6 +79,7 @@ abstract class SingleInputFragment : Fragment() {
     private var textField: CardView? = null
     private var inputSwitcher: ViewAnimator? = null
     private var nextButton: ImageButton? = null
+    private var previousButton: ImageButton? = null
     private var progress: ProgressBar? = null
     private var stepText: TextView? = null
 
@@ -93,13 +95,13 @@ abstract class SingleInputFragment : Fragment() {
     private var detailsTextColor = -1
     private var errorTextColor = -1
 
-//    override fun onBackPressed() {
-//        if (stepIndex == 0) {
-//            onDestroyView()
-//        } else {
-//            previousStep()
-//        }
-//    }
+    private fun onBackPressed() {
+        if (stepIndex == 0) {
+            onDestroyView()
+        } else {
+            previousStep()
+        }
+    }
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -134,6 +136,7 @@ abstract class SingleInputFragment : Fragment() {
         textField = rootView.findViewById(R.id.textField) as CardView
         inputSwitcher = rootView.findViewById(R.id.inputSwitcher) as ViewAnimator
         nextButton = rootView.findViewById(R.id.nextButton) as ImageButton
+        previousButton = rootView.findViewById(R.id.previousButton) as ImageButton
         progress = rootView.findViewById(R.id.progress) as ProgressBar
         stepText = rootView.findViewById(R.id.stepText) as TextView
         setProgressDrawable()
@@ -249,6 +252,12 @@ abstract class SingleInputFragment : Fragment() {
     }
 
     private fun updateStep() {
+        if (stepIndex > 0) {
+            previousButton?.visibility = View.VISIBLE
+        } else {
+            previousButton?.visibility = View.GONE
+        }
+
         if (stepIndex >= steps.size) {
             hideSoftInput()
 
@@ -285,7 +294,6 @@ abstract class SingleInputFragment : Fragment() {
         val step = getCurrentStep()
 
         if (stepIndex + 1 >= steps.size) {
-            nextButton?.setImageDrawable(buttonFinishIcon)
             nextButton?.contentDescription = getString(R.string.finish)
             step.updateView(true)
         } else {
